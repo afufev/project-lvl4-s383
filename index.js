@@ -8,7 +8,7 @@ import Pug from 'koa-pug';
 import Router from 'koa-router';
 import koaLogger from 'koa-logger';
 import serve from 'koa-static';
-import koaWebpack from 'koa-webpack';
+// import koaWebpack from 'koa-webpack';
 import bodyParser from 'koa-bodyparser';
 import session from 'koa-generic-session';
 import flash from 'koa-flash-simple';
@@ -17,12 +17,12 @@ import methodOverride from 'koa-methodoverride';
 import Rollbar from 'rollbar';
 
 
-import webpackConfig from './webpack.config.babel';
+// import webpackConfig from './webpack.config.babel';
 import addRoutes from './routes';
 import container from './container';
 
 const rollbar = new Rollbar({
-  accessToken: '47b0065861784ae3a086e8b5de04f6ee',
+  accessToken: process.env.ROLLBAR_TOKEN,
   environment: 'production',
   captureUncaught: true,
   captureUnhandledRejections: true,
@@ -59,11 +59,11 @@ export default () => {
   }));
   app.use(serve(path.join(__dirname, 'public')));
 
-  if (process.env.NODE_ENV !== 'production') {
-    koaWebpack({
-      config: webpackConfig,
-    }).then(m => app.use(m));
-  }
+  // if (process.env.NODE_ENV !== 'production') {
+  //   koaWebpack({
+  //     config: webpackConfig,
+  //   }).then(m => app.use(m));
+  // }
 
   app.use(koaLogger());
   const router = new Router();
