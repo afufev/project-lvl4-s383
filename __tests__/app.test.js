@@ -7,7 +7,7 @@ describe('requests', () => {
   let server;
 
   beforeAll(() => {
-    expect.extend(matchers);
+    jasmine.addMatchers(matchers);
   });
 
   beforeEach(() => {
