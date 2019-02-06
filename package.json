@@ -5,11 +5,11 @@
   "engines": {
     "node": "11.x"
   },
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest",
     "start": "gulp server",
-    "build": "NODE_ENV=production babel . --out-dir dist --source-maps inline",
+    "build": "npx webpack -p --env production",
     "postinstall": "npm run build"
   },
   "repository": {
@@ -31,14 +31,9 @@
   "jest": {
     "testEnvironment": "node",
     "collectCoverage": true,
-    "collectCoverageFrom": [
-      "*.js"
-    ],
-    "coverageReporters": [
-      "lcov"
-    ],
     "testPathIgnorePatterns": [
-      "<rootDir>/__tests__/__fixtures__"
+      "/node_modules/",
+      "/__tests__/__fixtures__"
     ]
   },
   "dependencies": {
@@ -53,6 +48,9 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/register": "^7.0.0",
     "acorn": "^6.0.7",
+    "autoprefixer": "^9.4.7",
+    "babel-loader": "^8.0.5",
+    "babel-register": "^6.26.0",
     "bootstrap": "^4.2.1",
     "css-loader": "^2.1.0",
     "debug": "^4.1.1",
@@ -61,6 +59,7 @@
     "gulp-cli": "^2.0.1",
     "gulp-util": "^3.0.8",
     "jquery": "^3.3.1",
+    "jquery-ujs": "^1.2.2",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-flash-simple": "0.0.3",
@@ -72,13 +71,19 @@
     "koa-static": "^5.0.0",
     "koa-webpack": "^5.2.1",
     "lodash": "^4.17.11",
+    "node-sass": "^4.11.0",
     "pg": "^7.8.0",
     "pg-hstore": "^2.3.2",
     "popper.js": "^1.14.7",
+    "postcss": "^7.0.14",
+    "postcss-loader": "^3.0.0",
     "rollbar": "^2.5.2",
+    "sass-loader": "^7.1.0",
     "sequelize": "^4.42.0",
     "sequelize-cli": "^5.4.0",
     "sqlite3": "^4.0.6",
+    "style-loader": "^0.23.1",
+    "terser": "^3.14.1",
     "umzug": "^2.2.0",
     "webpack": "^4.29.0"
   },

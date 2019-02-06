@@ -1,8 +1,8 @@
 import path from 'path';
-// import webpack from 'webpack';
-// const path = require('path');
+import webpack from 'webpack';
+import autoprefixer from 'autoprefixer';
 
-module.exports = {
+export default {
   mode: process.env.NODE_ENV || 'development',
   entry: ['./src/index.js'],
   output: {
@@ -18,17 +18,26 @@ module.exports = {
         use: 'babel-loader',
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+          {
+            loader: 'postcss-loader',
+            options: { plugins: [autoprefixer] },
+          },
+        ],
       },
     ],
   },
   plugins: [
-    // new webpack.ProvidePlugin({
-    //   $: 'jquery',
-    //   jQuery: 'jquery',
-    //   'window.jQuery': 'jquery',
-    //   Popper: ['popper.js', 'default'],
-    // }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default'],
+    }),
   ],
+  devtool: 'sourcemap',
 };
