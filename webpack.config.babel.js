@@ -18,11 +18,11 @@ export default {
         use: 'babel-loader',
       },
       {
-        test: /\.scss$/,
+        test: /\.css$/,
         use: [
           'style-loader',
           'css-loader',
-          'sass-loader',
+          // 'sass-loader',
           {
             loader: 'postcss-loader',
             options: { plugins: [autoprefixer] },

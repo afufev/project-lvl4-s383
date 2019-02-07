@@ -11,4 +11,3 @@ services:
     volumes:
       - .:/code
       - ./.bash_history:/root/.bash_history
-      - /code/node_modules/
