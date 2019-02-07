@@ -8,11 +8,10 @@
     "dialect": "sqlite"
   },
   "production": {
+    "username": "root",
+    "password": null,
+    "database": "database_production",
     "use_env_variable": "DATABASE_URL",
-    "dialect": "postgres",
-    "protocol": "postgres",
-    "dialectOptions": {
-      "ssl": true
-  }
+    "dialect": "postgres"
   }
 }

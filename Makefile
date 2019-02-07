@@ -8,7 +8,7 @@ compose:
 	docker-compose up
 
 compose-install:
-	docker-compose run web npm install
+	docker-compose run web npm install --unsafe-perm
 
 compose-setup: prepare compose-build compose-install compose-db-setup
 	npx flow-typed install
