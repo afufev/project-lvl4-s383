@@ -13,12 +13,6 @@ export default (router) => {
     })
     .post('users', '/users', async (ctx) => {
       const { form } = ctx.request.body;
-      try {
-        const user = User.build(form);
-        await user.save();
-      } catch (e) {
-        console.log(e);
-      }
       const user = User.build(form);
       try {
         await user.save();
