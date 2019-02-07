@@ -13,7 +13,7 @@ export default (router) => {
     })
     .post('users', '/users', async (ctx) => {
       const { request: { body: form } } = ctx;
-      const user = User.build(form);
+      const user = await User.build(form);
       console.log(user);
       try {
         await user.save();
