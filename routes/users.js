@@ -17,6 +17,7 @@ export default (router) => {
       try {
         await user.save();
         ctx.flash.set('User has been created');
+        ctx.session.userId = user.id;
         ctx.redirect(router.url('root'));
       } catch (e) {
         ctx.render('users/new', { f: buildFormObj(user, e) });
