@@ -4,19 +4,25 @@ mixin formFor(f, options = {})
   - const url = _.get(options, 'url');
   - const method = _.get(options, 'method', 'get').toLowerCase();
   - const isStandart = _.includes(['get', 'post'], method);
-  form(action= url method= isStandart ? method : 'post')
-    if !isStandart
-      input(name='_method' type='hidden' value= method)
-    block
+  - const header3 = _.get(options, 'header');
+  - const id = header3 === 'Sign in' ? 'new_user_sign_in_type' : 'new_user';
+  .container-fluid
+    .row.justify-content-center.pb-5.mt-5.text-center
+      .col-12.col-sm-8.col-md-7.col-lg-4
+       .card.shadow.border-top.border-primary
+          .card-body.p-4
+            h1.h3.mb-4.mt-3= header3
+            form.simple_form(class= id id= id novalidate='novalidate' action= url method= isStandart ? method : 'post')
+              if !isStandart
+                input(name='_method' type='hidden' value= method)
+              block
 
 mixin input(f, property, options = { as: 'text' })
   - const value = f.object[property] === undefined ? '' : f.object[property]
-  .form-group(class=(f.errors[property] && 'has-danger'))
-    label= property
-    input(name=getInputName(f, property) class='form-control' type=options['as'] value=`${value}`)
+  .form-group(class= `${property} ${(f.errors[property] && 'has-danger')} reqiured`)
+    input(name=getInputName(f, property) class=`form-control ${property} required` type=options['as'] value=`${value}` placeholder= property)
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
 mixin button(f, type = 'submit')
-  .form-group
-    input(class='btn' type=`${type}` value=`Save`)
+  input.btn.btn-primary.btn-block(type=`${type}` value=`Save`)
