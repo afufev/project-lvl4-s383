@@ -6,25 +6,35 @@ html(lang="en")
     title= Title
     script(src='/assets/main.js')
   body
-    nav.navbar.navbar-expand-lg.navbar-light.bg-faded
-      a.navbar-brand(href="/") Task Manager
-      button.navbar-toggler(data-toggle="collapse" data-target="#navbarSupportedContent")
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark
+      a.navbar-brand.mr-4(href="/") Task Manager
+      button.navbar-toggler(
+        type = "button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      )
         span.navbar-toggler-icon
-      .collapse.navbar-collapse
+      .collapse.navbar-collapse#navbarSupportedContent
         ul.navbar-nav.mr-auto
-          li.nav-item.active
-            a.nav-link(href=urlFor('users')) Users
+          li.nav-item
+            a.nav-link.text-light(href=urlFor('users')) Users
+          li.nav-item
         ul.navbar-nav
           if isSignedIn()
-            li.nav-item
-              a.nav-link(href=urlFor('session') data-method='delete' rel='nofollow') Sign Out
+            form.form-inline.d-inline-block(action= urlFor('session') method='post')
+                input(name='_method' type='hidden' value='delete')
+                button.btn.btn-outline-light(type='submit') Sign Out
           else
             li.nav-item
-              a.nav-link(href=urlFor('newSession')) Sign In
+              a.nav-link.text-light.mr-2(href=urlFor('newSession')) Sign In
             li.nav-item
-              a.nav-link(href=urlFor('newUser')) Sign Up
+              a.btn.btn-outline-light(href=urlFor('newUser')) Sign Up
     .container
       - const msg = flash.get()
       if msg
         .alert.alert-info.m-3= msg
-      block content
+      .mt-5
+        block content
