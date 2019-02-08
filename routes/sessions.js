@@ -17,6 +17,7 @@ export default (router) => {
       });
       if (user && user.passwordDigest === encrypt(password)) {
         ctx.session.userId = user.id;
+        ctx.flash.set(`Welcome, ${user.fullName}`);
         ctx.redirect(router.url('root'));
         return;
       }
@@ -25,6 +26,7 @@ export default (router) => {
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })
     .delete('session', '/session', (ctx) => {
+      console.log(ctx);
       ctx.session = {};
       ctx.redirect(router.url('root'));
     });

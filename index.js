@@ -8,15 +8,16 @@ import Pug from 'koa-pug';
 import Router from 'koa-router';
 import koaLogger from 'koa-logger';
 import serve from 'koa-static';
-import koaWebpack from 'koa-webpack';
+// import koaWebpack from 'koa-webpack';
 import bodyParser from 'koa-bodyparser';
 import session from 'koa-generic-session';
 import flash from 'koa-flash-simple';
 import _ from 'lodash';
 import methodOverride from 'koa-methodoverride';
 import Rollbar from 'rollbar';
+// import passport from 'koa-passport';
 
-import webpackConfig from './webpack.config.babel';
+// import webpackConfig from './webpack.config.babel';
 import addRoutes from './routes';
 import container from './container';
 
@@ -34,9 +35,16 @@ export default () => {
     try {
       await next();
     } catch (err) {
+      console.error(err);
       rollbar.error(err, ctx.request);
     }
   });
+
+  // if (process.env.NODE_ENV === 'development') {
+  //   koaWebpack({
+  //     config: webpackConfig,
+  //   }).then(m => app.use(m));
+  // }
 
   app.keys = ['some secret hurr'];
   app.use(session(app));
@@ -58,17 +66,15 @@ export default () => {
   }));
   app.use(serve(path.join(__dirname, 'public')));
 
-  if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
-    koaWebpack({
-      config: webpackConfig,
-    }).then(m => app.use(m));
-  }
-
   app.use(koaLogger());
+
   const router = new Router();
   addRoutes(router, container);
   app.use(router.allowedMethods());
   app.use(router.routes());
+
+  // app.use(passport.initialize());
+  // app.use(passport.session());
 
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),
