@@ -12,7 +12,9 @@ mixin formFor(f, options = {})
        .card.shadow.border-top.border-primary
           .card-body.p-4
             h1.h3.mb-4.mt-3= header3
-            form.simple_form(class= id id= id novalidate='novalidate' action= url method= isStandart ? method : 'post')
+            form.simple_form.needs-validation(
+              class= id id= id novalidate action= url method= isStandart ? method : 'post'
+            )
               if !isStandart
                 input(name='_method' type='hidden' value= method)
               block
@@ -20,7 +22,9 @@ mixin formFor(f, options = {})
 mixin input(f, property, options = { as: 'text' })
   - const value = f.object[property] === undefined ? '' : f.object[property]
   .form-group(class= `${property} ${(f.errors[property] && 'has-danger')} reqiured`)
-    input(name=getInputName(f, property) class=`form-control ${property} required` type=options['as'] value=`${value}` placeholder= property)
+    input.form-control.required(
+      name=getInputName(f, property) type=options['as'] value= value placeholder= property
+    )
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 

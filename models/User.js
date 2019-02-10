@@ -6,9 +6,11 @@ export default (sequelize, DataTypes) => {
     lastName: DataTypes.STRING,
     email: {
       type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
       validate: {
         isEmail: true,
+        notEmpty: true,
       },
     },
     passwordDigest: {
@@ -19,6 +21,7 @@ export default (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.VIRTUAL,
+      allowNull: false,
       set(value) {
         this.setDataValue('passwordDigest', encrypt(value));
         this.setDataValue('password', value);
@@ -26,6 +29,7 @@ export default (sequelize, DataTypes) => {
       },
       validate: {
         len: [1, +Infinity],
+        notEmpty: true,
       },
     },
   },
