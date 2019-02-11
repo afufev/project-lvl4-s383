@@ -1,4 +1,5 @@
 import buildFormObj from '../lib/formObjectBuilder';
+import { encrypt } from '../lib/secure';
 import { User } from '../models';
 
 export default (router) => {
@@ -11,7 +12,17 @@ export default (router) => {
       const user = User.build();
       ctx.render('users/new', { f: buildFormObj(user) });
     })
-    .post('users', '/users', async (ctx) => {
+    .get('userProfile', '/account/profile/edit', async (ctx) => {
+      const { userId: id } = ctx.session;
+      const user = await User.findOne({
+        where: { id },
+      });
+      ctx.render('users/profile', { f: buildFormObj(user), currentUrl: router.url('userProfile') });
+    })
+    .get('userSettings', '/account/settings/edit', (ctx) => {
+      ctx.render('users/account', { f: buildFormObj({}), currentUrl: router.url('userSettings') });
+    })
+    .post('createUser', '/users', async (ctx) => {
       const { form } = ctx.request.body;
       const user = User.build(form);
       try {
@@ -19,8 +30,67 @@ export default (router) => {
         ctx.flash.set('User has been created');
         ctx.session.userId = user.id;
         ctx.redirect(router.url('root'));
-      } catch (e) {
-        ctx.render('users/new', { f: buildFormObj(user, e) });
+      } catch (err) {
+        ctx.render('users/new', { f: buildFormObj(user, err) });
+      }
+    })
+    .patch('updateUserProfile', '/account/profile', async (ctx) => {
+      const { form: updatedUser } = ctx.request.body;
+      const { userId: id } = ctx.session;
+      const user = await User.findOne({
+        where: { id },
+      });
+      try {
+        await user.update({ ...updatedUser });
+        ctx.flash.set('Your profile was updated');
+        ctx.redirect(router.url('userProfile'));
+      } catch (err) {
+        ctx.render('users/profile', { f: buildFormObj(user, err), currentUrl: router.url('userProfile') });
+      }
+    })
+    .patch('changePassword', '/account/settings/change_password', async (ctx) => {
+      const { currentPassword, newPassword, confirmPassword } = ctx.request.body.form;
+      const { userId: id } = ctx.session;
+      const user = await User.findOne({
+        where: { id },
+      });
+      const errorCheckings = [
+        {
+          check: () => !(user && user.passwordDigest === encrypt(currentPassword)),
+          message: 'Wrong password',
+          path: 'currentPassword',
+        },
+        {
+          check: () => (newPassword !== confirmPassword),
+          message: 'Passwords don\'t concur',
+          path: 'newPassword',
+        },
+      ];
+      const errors = errorCheckings
+        .map(el => (el.check() ? { ...el } : ''))
+        .filter(el => el);
+      console.log(errors);
+      if (errors.length === 0) {
+        await user.update({ password: newPassword });
+        ctx.flash.set('Your password was updated');
+        ctx.redirect(router.url('userProfile'));
+        return;
+      }
+      ctx.render('users/account', { f: buildFormObj({}, { errors }), currentUrl: router.url('userSettings') });
+    })
+    .delete('deleteUser', '/account/settings/delete', async (ctx) => {
+      const { userId: id } = ctx.session;
+      const user = await User.findOne({
+        where: { id },
+      });
+      try {
+        await user.destroy();
+        ctx.flash.set('Your profile was deleted. Good bye!');
+        ctx.session = {};
+        ctx.redirect(router.url('root'));
+      } catch (err) {
+        ctx.flash.set('An error occured on deleting your page. Try again');
+        ctx.render('users/edit', { f: buildFormObj(user, err) });
       }
     });
 };

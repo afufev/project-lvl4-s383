@@ -26,7 +26,6 @@ export default (router) => {
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })
     .delete('session', '/session', (ctx) => {
-      console.log(ctx);
       ctx.session = {};
       ctx.redirect(router.url('root'));
     });
