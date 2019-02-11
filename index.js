@@ -15,6 +15,7 @@ import flash from 'koa-flash-simple';
 import _ from 'lodash';
 import methodOverride from 'koa-methodoverride';
 import Rollbar from 'rollbar';
+import url from 'url';
 // import passport from 'koa-passport';
 
 // import webpackConfig from './webpack.config.babel';
@@ -35,8 +36,11 @@ export default () => {
     try {
       await next();
     } catch (err) {
-      console.error(err);
-      rollbar.error(err, ctx.request);
+      if (process.env.NODE_ENV === 'production') {
+        rollbar.error(err, ctx.request);
+      } else {
+        console.error(err);
+      }
     }
   });
 
@@ -59,6 +63,8 @@ export default () => {
   app.use(bodyParser());
   app.use(methodOverride((req) => {
     // return req?.body?._method;
+    console.log(req.body);
+    console.log(req.body && typeof req.body === 'object' && '_method' in req.body);
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
       return req.body._method; // eslint-disable-line
     }
@@ -87,6 +93,7 @@ export default () => {
     helperPath: [
       { _ },
       { urlFor: (...args) => router.url(...args) },
+      { url },
     ],
   });
   pug.use(app);
