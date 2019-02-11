@@ -1,27 +1,24 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
-import faker from 'faker';
 
-import db from '../models';
+import { User, sequelize } from '../models';
 import app from '..';
 
-beforeAll(async () => {
-  await db.sequelize.sync({ force: false });
+import {
+  user, unknownUser, updatedUser, updatedPassword, getCookie,
+} from './util';
+
+
+beforeAll(() => {
   jasmine.addMatchers(matchers);
 });
-
-const user = {
-  firstName: faker.name.firstName(),
-  lastName: faker.name.lastName(),
-  email: faker.internet.email(),
-  password: faker.internet.password(),
-};
 
 describe('basic routes', () => {
   let server;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     server = app().listen();
+    await sequelize.sync({ force: false });
   });
 
   it('GET /', async () => {
@@ -47,11 +44,65 @@ describe('basic routes', () => {
   });
 });
 
+describe('sessions', () => {
+  let server;
+
+  beforeEach(async () => {
+    server = app().listen();
+    await sequelize.sync({ force: true });
+    await request.agent(server)
+      .post('/users')
+      .send({ form: user });
+  });
+
+  it('GET /session/new', async () => {
+    const res = await request.agent(server)
+      .get('/session/new');
+    expect(res).toHaveHTTPStatus(200);
+  });
+
+  it('POST /session', async () => {
+    const res = await request.agent(server)
+      .post('/session')
+      .send({ form: user });
+    expect(res).toHaveHTTPStatus(302);
+  });
+
+  it('POST /session (errors)', async () => {
+    const res = await request.agent(server)
+      .post('/session')
+      .type('form')
+      .send({ form: unknownUser });
+    const returnPath = res.req.path;
+    expect(returnPath).toBe('/session');
+  });
+
+  it('DELETE /session', async () => {
+    const authRes = await request.agent(server)
+      .post('/session')
+      .type('form')
+      .send({ form: user });
+    expect(authRes).toHaveHTTPStatus(302);
+    const cookie = authRes.headers['set-cookie'];
+
+    const res = await request.agent(server)
+      .delete('/session')
+      .set('Cookie', cookie);
+    expect(res).toHaveHTTPStatus(302);
+  });
+
+  afterEach((done) => {
+    server.close();
+    done();
+  });
+});
+
 describe('users', () => {
   let server;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     server = app().listen();
+    await sequelize.sync({ force: true });
   });
 
   it('GET /users/new', async () => {
@@ -80,58 +131,50 @@ describe('users', () => {
     expect(res2).toHaveHTTPStatus(200);
   });
 
-  afterEach((done) => {
-    server.close();
-    done();
-  });
-});
+  it('GET /account/profile/edit', async () => {
+    const cookie = await getCookie(server);
 
-
-describe('sessions', () => {
-  let server;
-
-  beforeEach(() => {
-    server = app().listen();
-  });
-
-  it('GET /session/new', async () => {
     const res = await request.agent(server)
-      .get('/session/new');
+      .get('/account/profile/edit')
+      .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(200);
   });
 
-  it('POST /session', async () => {
-    const res = await request.agent(server)
-      .post('/session')
-      .send({ form: user });
-    expect(res).toHaveHTTPStatus(302);
-  });
+  it('PATCH /account/profile', async () => {
+    const cookie = await getCookie(server);
 
-  it('POST /session (errors)', async () => {
-    const unknownUser = {
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    };
     const res = await request.agent(server)
-      .post('/session')
+      .patch('/account/profile')
       .type('form')
-      .send({ form: unknownUser });
-    const returnPath = res.req.path;
-    expect(returnPath).toBe('/session');
-  });
-
-  it('DELETE /session', async () => {
-    const authRes = await request.agent(server)
-      .post('/session')
-      .type('form')
-      .send({ form: user });
-    expect(authRes).toHaveHTTPStatus(302);
-    const cookie = authRes.headers['set-cookie'];
-
-    const res = await request.agent(server)
-      .delete('/session')
+      .send({ form: updatedUser })
       .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(302);
+  });
+
+  it('PATCH /account/settings/change_password', async () => {
+    updatedPassword.confirmPassword = updatedPassword.newPassword;
+    const cookie = await getCookie(server);
+
+    const res = await request.agent(server)
+      .patch('/account/settings/change_password')
+      .type('form')
+      .send({ form: updatedPassword })
+      .set('Cookie', cookie);
+    expect(res).toHaveHTTPStatus(302);
+  });
+
+  it('DELETE /account/settings/delete', async () => {
+    const cookie = await getCookie(server);
+
+    const res = await request.agent(server)
+      .delete('/account/settings/delete')
+      .set('Cookie', cookie);
+    expect(res).toHaveHTTPStatus(302);
+
+    const deletedUser = await User.findOne({
+      where: { email: updatedUser.email },
+    });
+    expect(deletedUser).toBeNull();
   });
 
   afterEach((done) => {
