@@ -1,9 +1,11 @@
-extends /layouts/application.pug
+extends /layouts/sign-form.pug
 
-block content
-  +formFor(f, { url: urlFor('users'), method: 'post', header: 'Join Task Manager!' })
-    +input(f, 'email')
-    +input(f, 'firstName')
-    +input(f, 'lastName')
-    +input(f, 'password', { as: 'password' })
-    +button(f)
+block signForm-content
+  h1.h3.mb-4.mt-3= 'Join Task Manager!'
+  +formFor(f, { url: urlFor('users'), method: 'post' })
+    block form-content
+      +input(f, 'email')
+      +input(f, 'firstName')
+      +input(f, 'lastName')
+      +input(f, 'password', { as: 'password' })
+      +button(f)

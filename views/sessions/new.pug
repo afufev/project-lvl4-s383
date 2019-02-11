@@ -1,7 +1,9 @@
-extends /layouts/application.pug
+extends /layouts/sign-form.pug
 
-block content
-  +formFor(f, { url: urlFor('session'), method: 'post', header: 'Sign in' })
-    +input(f, 'email')
-    +input(f, 'password', { as: 'password' })
-    +button(f)
+block signForm-content
+  h1.h3.mb-4.mt-3= 'Sign in'
+  +formFor(f, { url: urlFor('session'), method: 'post' })
+    block form-content
+      +input(f, 'email')
+      +input(f, 'password', { as: 'password' })
+      +button(f)
