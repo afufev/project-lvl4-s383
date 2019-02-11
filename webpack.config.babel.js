@@ -4,10 +4,13 @@ import autoprefixer from 'autoprefixer';
 
 export default {
   mode: process.env.NODE_ENV || 'development',
-  entry: ['./src/index.js'],
+  entry: {
+    main: ['./src/index.js'],
+    vendor: ['jquery', 'jquery-ujs'],
+  },
   output: {
     path: path.join(__dirname, 'public', 'assets'),
-    filename: 'main.js',
+    filename: '[name].js',
     publicPath: '/public/assets/',
   },
   module: {
