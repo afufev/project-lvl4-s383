@@ -21,7 +21,6 @@ export default (router) => {
         ctx.redirect(router.url('root'));
         return;
       }
-
       ctx.flash.set('email or password were wrong');
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })

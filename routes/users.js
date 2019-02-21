@@ -14,9 +14,7 @@ export default (router) => {
     })
     .get('userProfile', '/account/profile/edit', async (ctx) => {
       const { userId: id } = ctx.session;
-      const user = await User.findOne({
-        where: { id },
-      });
+      const user = await User.findByPk(id);
       ctx.render('users/profile', { f: buildFormObj(user), currentUrl: router.url('userProfile') });
     })
     .get('userSettings', '/account/settings/edit', (ctx) => {
@@ -37,9 +35,7 @@ export default (router) => {
     .patch('updateUserProfile', '/account/profile', async (ctx) => {
       const { form: updatedUser } = ctx.request.body;
       const { userId: id } = ctx.session;
-      const user = await User.findOne({
-        where: { id },
-      });
+      const user = await User.findByPk(id);
       try {
         await user.update({ ...updatedUser });
         ctx.flash.set('Your profile was updated');
@@ -51,9 +47,7 @@ export default (router) => {
     .patch('changePassword', '/account/settings/change_password', async (ctx) => {
       const { currentPassword, newPassword, confirmPassword } = ctx.request.body.form;
       const { userId: id } = ctx.session;
-      const user = await User.findOne({
-        where: { id },
-      });
+      const user = await User.findByPk(id);
       const errorCheckings = [
         {
           check: () => !(user && user.passwordDigest === encrypt(currentPassword)),
@@ -69,7 +63,6 @@ export default (router) => {
       const errors = errorCheckings
         .map(el => (el.check() ? { ...el } : ''))
         .filter(el => el);
-      console.log(errors);
       if (errors.length === 0) {
         await user.update({ password: newPassword });
         ctx.flash.set('Your password was updated');
@@ -80,9 +73,7 @@ export default (router) => {
     })
     .delete('deleteUser', '/account/settings/delete', async (ctx) => {
       const { userId: id } = ctx.session;
-      const user = await User.findOne({
-        where: { id },
-      });
+      const user = await User.findByPk(id);
       try {
         await user.destroy();
         ctx.flash.set('Your profile was deleted. Good bye!');
