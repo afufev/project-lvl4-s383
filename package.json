@@ -34,7 +34,7 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/__tests__/__fixtures__",
-      "/__tests__/util"
+      "/__tests__/helpers"
     ]
   },
   "dependencies": {

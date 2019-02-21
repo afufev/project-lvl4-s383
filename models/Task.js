@@ -16,54 +16,42 @@ export default (sequelize, DataTypes) => {
     Task.belongsToMany(models.Tag, { through: 'TaskTag', foreignKey: 'taskId' });
   };
 
-  Task.loadScopes = (models) => {
-    Task.addScope('default', {
+  // Task.addScope('default', {
+  //   include: [
+  //     { model: sequelize.models.User, as: 'creator' },
+  //     { model: sequelize.models.User, as: 'assignee' },
+  //     { model: sequelize.models.TaskStatus, as: 'status' },
+  //     { model: sequelize.models.Tag },
+  //   ],
+  // });
+
+  Task.addScope('filtered', (filter) => {
+    const {
+      limit, offset, order, tags, statusId, assigneeId, creatorId,
+    } = filter;
+    const tagsQuery = tags === null ? tags : { name: tags };
+    return ({
       include: [
-        { model: models.User, as: 'creator' },
-        { model: models.User, as: 'assignee' },
-        { model: models.TaskStatus, as: 'status' },
-        { model: models.Tag },
+        { model: sequelize.models.User, as: 'creator', where: creatorId },
+        { model: sequelize.models.User, as: 'assignee', where: assigneeId },
+        { model: sequelize.models.TaskStatus, as: 'status', where: statusId },
+        { model: sequelize.models.Tag, where: tagsQuery },
       ],
+      order,
+      offset,
+      limit,
+      subQuery: false,
     });
+  });
 
-    Task.addScope('filtered', (filter) => {
-      console.log(`INSIDE MODEL: ${JSON.stringify(filter)}`);
-      const {
-        limit, offset, order, tags, statusId, assigneeId, creatorId,
-      } = filter;
-      // const tagsQuery = tags === null ? tags : { name: tags };
-      return ({
-        include: [
-          { model: models.User, as: 'creator', where: creatorId },
-          { model: models.User, as: 'assignee', where: assigneeId },
-          { model: models.TaskStatus, as: 'status', where: statusId },
-          // { model: models.Tag, where: tagsQuery },
-        ],
-        order,
-        offset,
-        limit,
-      });
-    });
-
-    Task.addScope('tags', (tags) => {
-      console.log(`INSIDE MODEL TAGS: ${JSON.stringify(tags)}`);
-      return ({
-        include: [
-          {
-            model: models.Tag,
-            where: { name: { [sequelize.Op.or]: tags } },
-            group: ['Task.id'],
-            having: sequelize.where(sequelize.fn('COUNT', sequelize.col('*')), { [sequelize.Op.gte]: tags.length }),
-          },
-        ],
-        // having: sequelize.literal(`count(Tag.id) = ${tags.length}`),
-      });
-    });
-  };
-
-     // having: sequelize.where(sequelize.fn('max', sequelize.col('guarantees.end_date')), {
-     //        $lte: sequelize.fn('now'),
-     //      })
+  // this scope is supposed to find all tasks with all provided tags, not with only one
+  Task.addScope('tags', tags => ({
+    group: ['Task.id'],
+    having: sequelize.where(sequelize.fn('COUNT', sequelize.col('*')), { [sequelize.Op.gte]: tags.length }),
+    include: [
+      { model: sequelize.models.Tag, where: { name: { [sequelize.Op.or]: tags } } },
+    ],
+  }));
 
   // SELECT tasks.id, tasks.name FROM tasks
   // JOIN tasktags ON tasks.id=tasktags.task_id

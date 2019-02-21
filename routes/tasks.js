@@ -6,10 +6,11 @@ export default (router) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
       const { query } = ctx.request;
-      console.log(query);
+      // console.log(query);
       const filter = buildFilter(query);
       const tasks = await getFilteredTasks(filter);
-      console.log(JSON.stringify(tasks));
+      // console.log(tasks);
+      // console.log(await tasks[0].getTags());
       ctx.render('tasks', { tasks });
     })
     .get('newTask', '/tasks/new', async (ctx) => {

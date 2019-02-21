@@ -48,7 +48,10 @@ describe('sessions', () => {
   });
 
   it('DELETE /session', async () => {
-    const cookie = await getCookie(server);
+    const authRes = await request.agent(server)
+      .post('/users')
+      .send({ form: unknownUser });
+    const cookie = authRes.headers['set-cookie'];
 
     const res = await request.agent(server)
       .delete('/session')

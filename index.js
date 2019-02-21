@@ -1,7 +1,5 @@
 // @flow
 
-// import '@babel/polyfill';
-
 import path from 'path';
 import Koa from 'koa';
 import Pug from 'koa-pug';
@@ -16,7 +14,6 @@ import _ from 'lodash';
 import methodOverride from 'koa-methodoverride';
 import Rollbar from 'rollbar';
 import url from 'url';
-// import passport from 'koa-passport';
 
 // import webpackConfig from './webpack.config.babel';
 import addRoutes from './routes';
@@ -62,7 +59,6 @@ export default () => {
   });
   app.use(bodyParser());
   app.use(methodOverride((req) => {
-    // return req?.body?._method;
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
       return req.body._method; // eslint-disable-line
     }
@@ -77,8 +73,6 @@ export default () => {
   app.use(router.allowedMethods());
   app.use(router.routes());
 
-  // app.use(passport.initialize());
-  // app.use(passport.session());
 
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),

@@ -28,6 +28,7 @@ export const prepareTasks = async () => {
   const firstTagId = 1;
   const secondTagId = 2;
   await firstTask.setTags([firstTagId, secondTagId]);
-  await secondTask.setTags(firstTagId);
+  // await secondTask.setTags(firstTagId);
+  await secondTask.setTags([firstTagId, secondTagId]);
   await thirdTask.setTags(secondTagId);
 };

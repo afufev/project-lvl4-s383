@@ -5,7 +5,7 @@ export default (router) => {
   router
     .get('taskStatuses', '/taskStatuses', async (ctx) => {
       const taskStatuses = await TaskStatus.findAll();
-      ctx.render('tasktaskStatuses', { taskStatuses });
+      ctx.render('taskStatuses', { taskStatuses });
     })
     .get('newStatus', '/taskStatuses/new', (ctx) => {
       const status = TaskStatus.build();
