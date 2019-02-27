@@ -5,7 +5,7 @@ import { Task, TaskStatus, sequelize } from '../models';
 import app from '..';
 
 import {
-  seedUsers, seedStatuses, prepareTasks, getTaskCookie,
+  seedUsers, seedStatuses, /* prepareTasks, */getTaskCookie,
 } from './helpers';
 import { status, updatedStatus } from './__fixtures__/tasktatuses';
 import { firstTask, secondTask } from './__fixtures__/tasks';
@@ -151,42 +151,42 @@ describe('tasks', async () => {
   });
 });
 
-describe('filter tasks', async () => {
-  beforeAll(async () => {
-    await sequelize.sync({ force: true });
-    await seedUsers();
-    await seedStatuses();
-    await prepareTasks();
-  });
-
-  let server;
-
-  beforeEach(() => {
-    server = app().listen();
-  });
-
-  it('all tasks', async () => {
-    const res = await request.agent(server)
-      .get('/tasks');
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('by status, creator and  assignee', async () => {
-    const res = await request.agent(server)
-      .get('/tasks')
-      .query({ statusId: 1, assigneeId: 1, creatorId: 2 });
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('by tags', async () => {
-    const res = await request.agent(server)
-      .get('/tasks')
-      .query({ tagsQuery: '#firstTag#secondTag' });
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  afterEach(async (done) => {
-    server.close();
-    done();
-  });
-});
+// describe('filter tasks', async () => {
+//   beforeAll(async () => {
+//     await sequelize.sync({ force: true });
+//     await seedUsers();
+//     await seedStatuses();
+//     await prepareTasks();
+//   });
+//
+//   let server;
+//
+//   beforeEach(() => {
+//     server = app().listen();
+//   });
+//
+//   it('all tasks', async () => {
+//     const res = await request.agent(server)
+//       .get('/tasks');
+//     expect(res).toHaveHTTPStatus(200);
+//   });
+//
+//   it('by status, creator and  assignee', async () => {
+//     const res = await request.agent(server)
+//       .get('/tasks')
+//       .query({ statusId: 1, assigneeId: 1, creatorId: 2 });
+//     expect(res).toHaveHTTPStatus(200);
+//   });
+//
+//   it('by tags', async () => {
+//     const res = await request.agent(server)
+//       .get('/tasks')
+//       .query({ tagsQuery: '#firstTag#secondTag' });
+//     expect(res).toHaveHTTPStatus(200);
+//   });
+//
+//   afterEach(async (done) => {
+//     server.close();
+//     done();
+//   });
+// });
