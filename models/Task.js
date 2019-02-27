@@ -16,19 +16,21 @@ export default (sequelize, DataTypes) => {
     Task.belongsToMany(models.Tag, { through: 'TaskTag', foreignKey: 'taskId' });
   };
 
-  // Task.addScope('default', {
-  //   include: [
-  //     { model: sequelize.models.User, as: 'creator' },
-  //     { model: sequelize.models.User, as: 'assignee' },
-  //     { model: sequelize.models.TaskStatus, as: 'status' },
-  //     { model: sequelize.models.Tag },
-  //   ],
-  // });
+  Task.addScope('findByPk', id => ({
+    where: { id },
+    include: [
+      { model: sequelize.models.User, as: 'creator' },
+      { model: sequelize.models.User, as: 'assignee' },
+      { model: sequelize.models.TaskStatus, as: 'status' },
+      { model: sequelize.models.Tag },
+    ],
+  }));
 
   Task.addScope('filtered', (filter) => {
     const {
-      limit, offset, order, tags, statusId, assigneeId, creatorId,
+      limit, offset, orderBy, orderDirection, tags, statusId, assigneeId, creatorId,
     } = filter;
+    const order = [[orderBy, orderDirection]];
     const tagsQuery = tags === null ? tags : { name: tags };
     return ({
       include: [
@@ -44,7 +46,14 @@ export default (sequelize, DataTypes) => {
     });
   });
 
-  // this scope is supposed to find all tasks with all provided tags, not with only one
+  // this scope is supposed to find all tasks with all provided tags, not with only one of many
+  // should work like this:
+  // SELECT tasks.id, tasks.name FROM tasks
+  // JOIN tasktags ON tasks.id=tasktags.task_id
+  // JOIN tags ON tasktags.tag_id=tags.id
+  // WHERE tags.name IN (tags)
+  // GROUP BY tasks.id
+  // HAVING count(*) = `{tags.length}`;
   Task.addScope('tags', tags => ({
     group: ['Task.id'],
     having: sequelize.where(sequelize.fn('COUNT', sequelize.col('*')), { [sequelize.Op.gte]: tags.length }),
@@ -52,13 +61,6 @@ export default (sequelize, DataTypes) => {
       { model: sequelize.models.Tag, where: { name: { [sequelize.Op.or]: tags } } },
     ],
   }));
-
-  // SELECT tasks.id, tasks.name FROM tasks
-  // JOIN tasktags ON tasks.id=tasktags.task_id
-  // JOIN tags ON tasktags.tag_id=tags.id
-  // WHERE tags.name IN (tags)
-  // GROUP BY tasks.id
-  // HAVING count(*) = `{tags.length}`;
 
   return Task;
 };
