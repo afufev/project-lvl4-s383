@@ -13,6 +13,11 @@ export default (router, { logger }) => {
       const { query } = ctx.request;
       const { userId: currentUser } = ctx.session;
       const filter = buildFilter(query);
+      try {
+        await getFilteredTasks(filter);
+      } catch (err) {
+        console.error(err);
+      }
       const tasks = await getFilteredTasks(filter);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
