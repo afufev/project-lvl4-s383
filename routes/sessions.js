@@ -26,6 +26,7 @@ export default (router) => {
     })
     .delete('session', '/session', (ctx) => {
       ctx.session = {};
+      ctx.flash.set('Goodbye!');
       ctx.redirect(router.url('root'));
     });
 };

@@ -20,6 +20,11 @@ export default (router) => {
     .get('userSettings', '/account/settings/edit', (ctx) => {
       ctx.render('users/account', { f: buildFormObj({}), currentUrl: router.url('userSettings') });
     })
+    .get('showUser', '/users/:id', async (ctx) => {
+      const { id } = ctx.params;
+      const user = await User.findByPk(id);
+      ctx.render('users/show', { user });
+    })
     .post('createUser', '/users', async (ctx) => {
       const { form } = ctx.request.body;
       const user = User.build(form);
