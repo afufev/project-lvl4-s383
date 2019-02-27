@@ -4,6 +4,8 @@ block signForm-content
   h1.h3.mb-4.mt-3= 'Sign in'
   +formFor(f, { url: urlFor('session'), method: 'post' })
     block form-content
-      +input(f, 'email', { as: 'email'})
-      +input(f, 'password', { as: 'password' })
+      .form-group
+        +input(f, 'email', { as: 'email'})
+      .form-group
+        +input(f, 'password', { as: 'password' })
       +button(f)
