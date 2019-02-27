@@ -35,12 +35,12 @@ export default (router) => {
       const task = Task.build();
       ctx.render('tasks/new', { f: buildFormObj(task), users, statuses, tags }); // eslint-disable-line
     })
-    .get('showTask', '/tasks/:id', userAuth, async (ctx) => {
+    .get('showTask', '/tasks/:id', async (ctx) => {
       const { id } = ctx.params;
       const task = await Task.scope({ method: ['findByPk', id] }).findOne();
       ctx.render('tasks/show', { task });
     })
-    .get('taskSettings', '/tasks/:id/settings', async (ctx) => {
+    .get('taskSettings', '/tasks/:id/settings', userAuth, async (ctx) => {
       const { id } = ctx.params;
       const task = await Task.scope({ method: ['findByPk', id] }).findOne();
       const users = await User.findAll();

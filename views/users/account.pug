@@ -6,21 +6,13 @@ block settings-content
     .row
       .col-12.col-xl-6
         block form-content
-          +input(f, 'currentPassword', { as: 'password' })
-          +input(f, 'newPassword', { as: 'password' })
-          +input(f, 'confirmPassword', { as: 'password' })
+          .form-group
+            +input(f, 'currentPassword', { as: 'password' })
+          .form-group
+            +input(f, 'newPassword', { as: 'password' })
+          .form-group
+            +input(f, 'confirmPassword', { as: 'password' })
           +button(f)
           hr
-          button.btn.btn-danger(type="button" data-toggle="modal" data-target="#exampleModal") Delete account
-          .modal.fade#exampleModal(role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true")
-            .modal-dialog(role="document")
-              .modal-content
-                .modal-header
-                  h5.modal-title#exampleModalLabel ATTENTION
-                  button.close(type="button" data-dismiss="modal" aria-label="Close")
-                    span(aria-hidden="true") &times;
-                .modal-body
-                  p Are you sure you want to DELETE your account?
-                .modal-footer
-                  button.btn.btn-secondary(type="button" data-dismiss="modal") No, I don't want
-                  a.btn.btn-danger(href= urlFor('deleteUser') data-method='delete' rel='nofollow') Delete my account
+          button.btn.btn-danger(type='button' data-toggle='modal' data-target='#exampleModal') Delete account
+          +modal({ target: 'account', url: urlFor('deleteUser')})
