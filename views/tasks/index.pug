@@ -1,81 +1,79 @@
 extends /layouts/application.pug
 
 block content
-  if tasks.length > 0
-    .container-fluid.bg-light.py-3.px-5
-      .row.justify-content-center
-        button.btn.dropdown-toggle.btn-sm.btn-outline-secondary(type="button" data-toggle="collapse" data-target="#collapseFilter") Filter
-      .collapse#collapseFilter
-        form.mt-3(action= urlFor('tasks') method='get')
-          .row.justify-content-center.col-sm-12 Filter by
-            .form-row
-              .col
-                .form-group.col-md-9.border-left.mx-5.col-12
-                  label.h7 Status
-                  +select('Status', { name: 'statusId', choices: statuses, title: 'name', selected: filter.statusId })
-              .col
-                .form-group.col-md-9.border-left.mx-5.col-12
-                  label.h7 Assignee
-                  +select('Assignee', { name: 'assigneeId', choices: users, title: 'fullName', selected: filter.assigneeId })
-              .col
-                .form-group.col-md-9.border-left.mx-5.col-12
-                  label.h7 Creator
-                  +select('Creator', { name: 'creatorId', choices: users, title: 'fullName', selected: filter.creatorId })
-          .row.justify-content-center Tags
-            .col-md-7
-              .form-group
-                // label Tags
-                input.form-control.form-control-sm(type= 'search' placeholder='Filter tags' name='tagsQuery')
-          .row.justify-content-center
-            .col-md-1.ml-4
-              input.btn.btn-success.btn-sm(type= 'submit' value= 'Apply')
-    .row.mt-2
-      .col-1.col-md-2
-      .col-11.col-md-7
-        ul.nav
-          li.nav-item
-            p.pt-2 Sort by:
-          +order(filter, 'createdAt', 'Created at')
-          +order(filter, 'updatedAt', 'Updated at')
-          +order(filter, 'creatorId', 'Creator')
-          +order(filter, 'assigneeId', 'Assignee')
-          +order(filter, 'statusId', 'Status')
-      if isSignedIn()
-        .col-1
-          a.btn.btn-success(href= urlFor('tasks', { query: { creatorId: currentUser }})) My tasks
-    .row.justify-content-center.mt-2
-      .col-12.col-md-8
-        .table-responsive-md
-          table.table.table-stripped.table-hover
-            thead
+  .container-fluid.bg-light.py-3.px-5
+    .row.justify-content-center
+      button.btn.dropdown-toggle.btn-sm.btn-outline-secondary(type="button" data-toggle="collapse" data-target="#collapseFilter") Filter
+    .collapse#collapseFilter
+      form.mt-3(action= urlFor('tasks') method='get')
+        .row.justify-content-center.col-sm-12 Filter by
+          .form-row
+            .col
+              .form-group.col-md-9.border-left.mx-5.col-12
+                label.h7 Status
+                +select('Status', { name: 'statusId', choices: statuses, title: 'name', selected: filter.statusId })
+            .col
+              .form-group.col-md-9.border-left.mx-5.col-12
+                label.h7 Assignee
+                +select('Assignee', { name: 'assigneeId', choices: users, title: 'fullName', selected: filter.assigneeId })
+            .col
+              .form-group.col-md-9.border-left.mx-5.col-12
+                label.h7 Creator
+                +select('Creator', { name: 'creatorId', choices: users, title: 'fullName', selected: filter.creatorId })
+        .row.justify-content-center Tags
+          .col-md-7
+            .form-group
+              // label Tags
+              input.form-control.form-control-sm(type= 'search' placeholder='Filter tags' name='tagsQuery')
+        .row.justify-content-center
+          .col-md-1.ml-4
+            input.btn.btn-success.btn-sm(type= 'submit' value= 'Apply')
+  .row.mt-2
+    .col-1.col-md-2
+    .col-11.col-md-7
+      ul.nav
+        li.nav-item
+          p.pt-2 Sort by:
+        +order(filter, 'createdAt', 'Created at')
+        +order(filter, 'updatedAt', 'Updated at')
+        +order(filter, 'creatorId', 'Creator')
+        +order(filter, 'assigneeId', 'Assignee')
+        +order(filter, 'statusId', 'Status')
+    if isSignedIn()
+      .col-1
+        a.btn.btn-success(href= urlFor('tasks', { query: { creatorId: currentUser }})) My tasks
+  .row.justify-content-center.mt-2
+    .col-12.col-md-8
+      .table-responsive-md
+        table.table.table-stripped.table-hover
+          thead
+            tr
+              th(scope= 'col') Task
+              th(scope= 'col') Status
+              th(scope= 'col') Tags
+              th(scope= 'col') Assignee
+          tbody
+            each task in tasks
+              - const id = task.id ? task.id : task.dataValues.id
+              - const name = task.name ? task.name : task.dataValues.name
+              - const status =  task.status ?  task.status.name : ''
               tr
-                th(scope= 'col') Task
-                th(scope= 'col') Status
-                th(scope= 'col') Tags
-                th(scope= 'col') Assignee
-            tbody
-              each task in tasks
-                - const id = task.id ? task.id : task.dataValues.id
-                - const name = task.name ? task.name : task.dataValues.name
-                - const status =  task.status ?  task.status.name : ''
-                tr
-                  td
-                    .row.pl-4.pt-2
-                      a.h6.font-weight-bold(href= urlFor('showTask', { id }))= name
-                    .row.pl-4.font-weight-light= `#${task.id} created on ${formatDate(task.createdAt)} by`
-                      a.pl-1(href= urlFor('showUser', { id: task.creator.id }))= task.creator.fullName
-                  td= status
-                  td
-                    each tag in task.Tags
-                      .row.mt-1
-                        a.badge.badge-info(href= urlFor('tasks', { query: { tagsQuery: tag.name } }))= `#${tag.name}`
-                  td
-                    if task.assignee.fullName
-                      a(href= urlFor('showUser', { id: task.assignee.id }))= task.assignee.fullName
-                    else
-                      ='any'
-    .row
-      .col-0.col-md-2
-      .col-12.col-md-3
-        +pagination(paginationObject)
-  p No tasks yet
+                td
+                  .row.pl-4.pt-2
+                    a.h6.font-weight-bold(href= urlFor('showTask', { id }))= name
+                  .row.pl-4.font-weight-light= `#${task.id} created on ${formatDate(task.createdAt)} by`
+                    a.pl-1(href= urlFor('showUser', { id: task.creator.id }))= task.creator.fullName
+                td= status
+                td
+                  each tag in task.Tags
+                    .row.mt-1
+                      a.badge.badge-info(href= urlFor('tasks', { query: { tagsQuery: tag.name } }))= `#${tag.name}`
+                td
+                  if task.assignee.fullName
+                    a(href= urlFor('showUser', { id: task.assignee.id }))= task.assignee.fullName
+                  else
+                    ='any'
+  .row
+    .col-0.col-md-2
+    .col-12.col-md-3
+      +pagination(paginationObject)

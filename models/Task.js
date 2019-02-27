@@ -27,6 +27,7 @@ export default (sequelize, DataTypes) => {
   }));
 
   Task.addScope('filtered', (filter) => {
+    console.log(filter);
     const {
       limit, offset, orderBy, orderDirection, tags, statusId, assigneeId, creatorId,
     } = filter;
