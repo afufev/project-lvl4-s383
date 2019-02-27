@@ -1,4 +1,5 @@
 import buildFormObj from '../lib/formObjectBuilder';
+import userAuth from '../lib/middlewares';
 import { TaskStatus } from '../models';
 
 export default (router) => {
@@ -7,11 +8,16 @@ export default (router) => {
       const taskStatuses = await TaskStatus.findAll();
       ctx.render('taskStatuses', { taskStatuses });
     })
-    .get('newStatus', '/taskStatuses/new', (ctx) => {
+    .get('newStatus', '/taskStatuses/new', userAuth, (ctx) => {
       const status = TaskStatus.build();
       ctx.render('taskStatuses/new', { f: buildFormObj(status) });
     })
-    .post('createStatus', '/taskStatuses', async (ctx) => {
+    .get('statusSettings', '/taskStatuses/:id/settings', userAuth, async (ctx) => {
+      const { id } = ctx.params;
+      const status = await TaskStatus.findByPk(id);
+      ctx.render('taskStatuses/settings', { f: buildFormObj(status) });
+    })
+    .post('createStatus', '/taskStatuses', userAuth, async (ctx) => {
       const { form } = ctx.request.body;
       const status = TaskStatus.build(form);
       try {
@@ -22,12 +28,7 @@ export default (router) => {
         ctx.render('taskStatuses/new', { f: buildFormObj(status, err) });
       }
     })
-    .get('statusSettings', '/taskStatuses/:id/settings', async (ctx) => {
-      const { id } = ctx.params;
-      const status = await TaskStatus.findByPk(id);
-      ctx.render('taskStatuses/settings', { f: buildFormObj(status) });
-    })
-    .patch('modifyStatus', '/taskStatuses/:id', async (ctx) => {
+    .patch('modifyStatus', '/taskStatuses/:id', userAuth, async (ctx) => {
       const { id } = ctx.params;
       const { form: updatedStatus } = ctx.request.body;
       const status = await TaskStatus.findByPk(id);
@@ -39,7 +40,7 @@ export default (router) => {
         ctx.render('taskStatuses/settings', { f: buildFormObj(status, err) });
       }
     })
-    .delete('deleteStatus', '/taskStatuses/:id/delete', async (ctx) => {
+    .delete('deleteStatus', '/taskStatuses/:id/delete', userAuth, async (ctx) => {
       const { id } = ctx.params;
       const status = await TaskStatus.findByPk(id);
       try {
