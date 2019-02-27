@@ -6,7 +6,10 @@ block settings-content
     .row
       .col-12.col-xl-6
         block form-content
-          +input(f, 'email', { as: 'email'})
-          +input(f, 'firstName')
-          +input(f, 'lastName')
+          .form-group
+            +input(f, 'email', { as: 'email'})
+          .form-group
+            +input(f, 'firstName')
+          .form-group
+            +input(f, 'lastName')
           +button(f)

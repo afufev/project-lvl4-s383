@@ -14,5 +14,6 @@ block settings-content
             +input(f, 'confirmPassword', { as: 'password' })
           +button(f)
           hr
-          button.btn.btn-danger(type='button' data-toggle='modal' data-target='#exampleModal') Delete account
-          +modal({ target: 'account', url: urlFor('deleteUser')})
+          - const target = `user${f.object.id}`;
+          button.btn.btn-danger(type='button' data-toggle='modal' data-target=`#${target}`) Delete account
+          +modal({ target, name: 'account', url: urlFor('deleteUser')})
