@@ -38,3 +38,12 @@ block content
                 .row.mt-2= formatDate(task.dueDate)
               else
                 .row.mt-2 None yet
+            if isSignedIn()
+              li.list-group-item.ml-0
+                .row
+                  a.btn.btn-secondary.btn-sm(href= urlFor('taskSettings', { id: task.id }) method='get' rel='nofollow') Edit
+              li.list-group-item.ml-0
+                .row
+                  - const target = `task${task.id}`;
+                  button.btn.btn-sm.btn-danger(type='button' data-toggle='modal' data-target= `#${target}`) Delete
+                  +modal({ target, name: 'task', url: urlFor('deleteTask', { id: task.id  }) })
