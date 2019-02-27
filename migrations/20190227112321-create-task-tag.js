@@ -1,9 +1,15 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('TaskTag', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('TaskTags', {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
+      type: Sequelize.INTEGER,
+    },
+    taskId: {
+      type: Sequelize.INTEGER,
+    },
+    tagId: {
       type: Sequelize.INTEGER,
     },
     createdAt: {
@@ -14,15 +20,6 @@ module.exports = {
       allowNull: false,
       type: Sequelize.DATE,
     },
-    taskId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    tagId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
   }),
-
-  down: queryInterface => queryInterface.dropTable('TaskTag'),
+  down: queryInterface => queryInterface.dropTable('TaskTags'),
 };
