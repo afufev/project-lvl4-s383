@@ -11,30 +11,22 @@ export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
       const { query } = ctx.request;
-      console.log(query);
       const { userId: currentUser } = ctx.session;
       const filter = buildFilter(query);
-      console.log(filter);
-      try {
-        const tasks = await getFilteredTasks(filter);
-        logger('next tasks been found %s', tasks);
-        console.log(tasks);
-        const users = await User.findAll();
-        const statuses = await TaskStatus.findAll();
-        const tags = await Tag.findAll();
-        const paginationObject = await getPaginationObject(query);
-        ctx.render('tasks', {
-          tasks,
-          users: [{ id: 'any', fullName: 'any' }, ...users],
-          statuses: [{ id: 'any', name: 'any' }, ...statuses],
-          currentUser,
-          tags,
-          filter,
-          paginationObject,
-        });
-      } catch (err) {
-        console.log(err);
-      }
+      const tasks = await getFilteredTasks(filter);
+      const users = await User.findAll();
+      const statuses = await TaskStatus.findAll();
+      const tags = await Tag.findAll();
+      const paginationObject = await getPaginationObject(query);
+      ctx.render('tasks', {
+        tasks,
+        users: [{ id: 'any', fullName: 'any' }, ...users],
+        statuses: [{ id: 'any', name: 'any' }, ...statuses],
+        currentUser,
+        tags,
+        filter,
+        paginationObject,
+      });
     })
     .get('newTask', '/tasks/new', userAuth, async (ctx) => {
       const users = await User.findAll();
