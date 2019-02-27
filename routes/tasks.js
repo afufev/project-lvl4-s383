@@ -7,13 +7,14 @@ import {
   User, Task, TaskStatus, Tag,
 } from '../models';
 
-export default (router) => {
+export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
       const { query } = ctx.request;
       const { userId: currentUser } = ctx.session;
       const filter = buildFilter(query);
       const tasks = await getFilteredTasks(filter);
+      logger('next tasks been found %s', tasks);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
@@ -58,8 +59,10 @@ export default (router) => {
         await task.save();
         await task.setTags(tags);
         ctx.flash.set('Task has been created');
+        logger('task created: %s', JSON.stringify(task));
         ctx.redirect(router.url('tasks'));
       } catch (err) {
+        logger('task save error: %s', JSON.stringify(err));
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();
         ctx.render('tasks/new', { f: buildFormObj(task, err), users, statuses, tags }); // eslint-disable-line
@@ -73,9 +76,11 @@ export default (router) => {
       try {
         await task.update(updatedTask);
         await task.setTags(tags);
+        logger('task updated with data: %s', task);
         ctx.flash.set('The task was updated');
         ctx.redirect(`/tasks/${id}`);
       } catch (err) {
+        logger('task update error: %s', JSON.stringify(err));
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();
         ctx.render('tasks/edit', { f: buildFormObj(task, err), users, statuses, tags }); // eslint-disable-line
