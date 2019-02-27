@@ -1,1 +1,16 @@
-// edit
+extends /layouts/application.pug
+
+block content
+  .row.mx-5.my-3
+    .col-0.col-md-2
+    .col-12.col-md-9
+      .row.h3.mb-0 Edit task status
+      .row.ml-n4.my-3
+        .col-12.col-md-9
+          .card.shadow
+            .card-body
+              +formFor(f, { url: urlFor('modifyStatus', { id: f.object.id }), method: 'patch' })
+                block form-content
+                  .form-group
+                    +input(f, 'name')
+                  +button(f)
