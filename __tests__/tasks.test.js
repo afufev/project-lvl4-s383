@@ -4,7 +4,9 @@ import matchers from 'jest-supertest-matchers';
 import { Task, TaskStatus, sequelize } from '../models';
 import app from '..';
 
-import { seedUsers, seedStatuses, prepareTasks } from './helpers';
+import {
+  seedUsers, seedStatuses, prepareTasks, getTaskCookie,
+} from './helpers';
 import { status, updatedStatus } from './__fixtures__/tasktatuses';
 import { firstTask, secondTask } from './__fixtures__/tasks';
 
@@ -14,6 +16,7 @@ beforeAll(async () => {
 
 describe('taskStatuses', () => {
   let server;
+  let cookie;
 
   beforeAll(async () => {
     await sequelize.sync({ force: true });
@@ -22,6 +25,7 @@ describe('taskStatuses', () => {
 
   beforeEach(async () => {
     server = app().listen();
+    cookie = await getTaskCookie(server);
   });
 
   it('GET /taskStatuses', async () => {
@@ -32,13 +36,15 @@ describe('taskStatuses', () => {
 
   it('GET /taskStatuses/new', async () => {
     const res = await request.agent(server)
-      .get('/taskStatuses/new');
+      .get('/taskStatuses/new')
+      .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(200);
   });
 
   it('POST /taskStatuses', async () => {
     const res = await request.agent(server)
       .post('/taskStatuses')
+      .set('Cookie', cookie)
       .send({ form: status });
     expect(res).toHaveHTTPStatus(302);
   });
@@ -46,7 +52,8 @@ describe('taskStatuses', () => {
   it('GET /taskStatuses/:id/settings', async () => {
     const { id } = await TaskStatus.findOne({ where: { name: `${status.name}` } });
     const res = await request.agent(server)
-      .get(`/taskStatuses/${id}/settings`);
+      .get(`/taskStatuses/${id}/settings`)
+      .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(200);
   });
 
@@ -54,6 +61,7 @@ describe('taskStatuses', () => {
     const { id } = await TaskStatus.findOne({ where: { name: `${status.name}` } });
     const res = await request.agent(server)
       .patch(`/taskStatuses/${id}`)
+      .set('Cookie', cookie)
       .type('form')
       .send({ form: updatedStatus });
     expect(res).toHaveHTTPStatus(302);
@@ -62,7 +70,8 @@ describe('taskStatuses', () => {
   it('DELETE /taskStatuses/:id/delete', async () => {
     const { id } = await TaskStatus.findOne({ where: { name: `${updatedStatus.name}` } });
     const res = await request.agent(server)
-      .delete(`/taskStatuses/${id}/delete`);
+      .delete(`/taskStatuses/${id}/delete`)
+      .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(302);
     const deletedStatus = await TaskStatus.findByPk(id);
     expect(deletedStatus).toBeNull();
@@ -82,21 +91,25 @@ describe('tasks', async () => {
   });
 
   let server;
+  let cookie;
   const updatedTask = { ...secondTask, id: firstTask.id };
 
   beforeEach(async () => {
     server = app().listen();
+    cookie = await getTaskCookie(server);
   });
 
   it('GET /tasks/new', async () => {
     const res = await request.agent(server)
-      .get('/tasks/new');
+      .get('/tasks/new')
+      .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(200);
   });
 
   it('POST /tasks', async () => {
     const res = await request.agent(server)
       .post('/tasks')
+      .set('Cookie', cookie)
       .send({ form: firstTask });
     expect(res).toHaveHTTPStatus(302);
   });
@@ -109,13 +122,15 @@ describe('tasks', async () => {
 
   it('GET /tasks/:id/settings', async () => {
     const res = await request.agent(server)
-      .get(`/tasks/${firstTask.id}/settings`);
+      .get(`/tasks/${firstTask.id}/settings`)
+      .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(200);
   });
 
   it('PATCH /tasks/:id', async () => {
     const res = await request.agent(server)
       .patch(`/tasks/${updatedTask.id}`)
+      .set('Cookie', cookie)
       .type('form')
       .send({ form: updatedTask });
     expect(res).toHaveHTTPStatus(302);
@@ -123,7 +138,8 @@ describe('tasks', async () => {
 
   it('DELETE /tasks/:id/delete', async () => {
     const res = await request.agent(server)
-      .delete(`/tasks/${updatedTask.id}/delete`);
+      .delete(`/tasks/${updatedTask.id}/delete`)
+      .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(302);
     const deletedTask = await Task.findByPk(updatedTask.id);
     expect(deletedTask).toBeNull();
@@ -145,7 +161,7 @@ describe('filter tasks', async () => {
 
   let server;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     server = app().listen();
   });
 

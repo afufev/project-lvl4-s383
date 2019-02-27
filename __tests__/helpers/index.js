@@ -15,7 +15,14 @@ export const getCookie = async (server) => {
   return authRes.headers['set-cookie'];
 };
 
-export const seedUsers = () => User.bulkCreate(usersArr);
+export const getTaskCookie = async (server) => {
+  const authRes = await request.agent(server)
+    .post('/session')
+    .send({ form: user });
+  return authRes.headers['set-cookie'];
+};
+
+export const seedUsers = () => User.bulkCreate([...usersArr, user]);
 
 export const seedStatuses = () => TaskStatus.bulkCreate(statusArr);
 
