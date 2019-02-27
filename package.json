@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "student's redis-like task manager web-app",
   "engines": {
-    "node": "11.9"
+    "node": "11.9",
+    "npm": "6.7.0"
   },
   "main": "index.js",
   "scripts": {

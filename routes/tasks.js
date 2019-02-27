@@ -11,10 +11,13 @@ export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
       const { query } = ctx.request;
+      console.log(query);
       const { userId: currentUser } = ctx.session;
       const filter = buildFilter(query);
+      console.log(filter);
       const tasks = await getFilteredTasks(filter);
       logger('next tasks been found %s', tasks);
+      console.log(tasks);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
