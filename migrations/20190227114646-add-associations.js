@@ -1,11 +1,11 @@
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.addColumn(
-    'Task',
+    'Tasks',
     'statusId',
     {
       type: Sequelize.INTEGER,
       references: {
-        model: 'TaskStatus',
+        model: 'TaskStatuses',
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -13,12 +13,12 @@ module.exports = {
     },
   )
     .then(() => queryInterface.addColumn(
-      'Task',
+      'Tasks',
       'creatorId',
       {
         type: Sequelize.INTEGER,
         references: {
-          model: 'User',
+          model: 'Users',
           key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -26,12 +26,12 @@ module.exports = {
       },
     ))
     .then(() => queryInterface.addColumn(
-      'Task',
+      'Tasks',
       'assigneeId',
       {
         type: Sequelize.INTEGER,
         references: {
-          model: 'User',
+          model: 'Users',
           key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -40,15 +40,15 @@ module.exports = {
     )),
 
   down: queryInterface => queryInterface.removeColumn(
-    'Task',
+    'Tasks',
     'statusId',
   )
     .then(() => queryInterface.removeColumn(
-      'Task',
+      'Tasks',
       'creatorId',
     ))
     .then(() => queryInterface.removeColumn(
-      'Task',
+      'Tasks',
       'assigneeId',
     )),
 };
