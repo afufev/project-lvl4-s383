@@ -10,7 +10,7 @@ import {
 import { status, updatedStatus } from './__fixtures__/tasktatuses';
 import { firstTask, secondTask } from './__fixtures__/tasks';
 
-beforeAll(async () => {
+beforeAll(() => {
   expect.extend(matchers);
 });
 
@@ -83,7 +83,7 @@ describe('taskStatuses', () => {
   });
 });
 
-describe('tasks', async () => {
+describe('tasks', () => {
   beforeAll(async () => {
     await sequelize.sync({ force: true });
     await seedUsers();
@@ -151,7 +151,7 @@ describe('tasks', async () => {
   });
 });
 
-// describe('filter tasks', async () => {
+// describe('filter tasks', () => {
 //   beforeAll(async () => {
 //     await sequelize.sync({ force: true });
 //     await seedUsers();
