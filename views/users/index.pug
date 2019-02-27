@@ -1,15 +1,26 @@
 extends /layouts/application.pug
 
 block content
-  table.table.table-stripped
-    thead
-      tr
-        th Full Name
-        th Email
-        th Created At
-    tbody
-      each user in users
-        tr
-          td= user.fullName
-          td= user.email
-          td= user.createdAt
+  .row.bg-light.pt-2.px-2
+    .col-0.col-md-2
+    .col-12.col-md-5
+      nav
+        ol.breadcrumb.bg-light
+          li.breadcrumb-item
+            a(href= urlFor('users')) Users /
+  .row.my-3
+    .col-0.col-md-2
+    .col-12.col-md-8
+      table.table.table-stripped
+        thead
+          tr
+            th Full Name
+            th Email
+            th Created At
+        tbody
+          each user in users
+            tr
+              td
+                a(href= urlFor('showUser', { id: user.id }))= user.fullName
+              td= user.email
+              td= formatDate(user.createdAt)
