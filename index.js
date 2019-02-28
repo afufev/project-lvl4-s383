@@ -33,11 +33,7 @@ export default () => {
     try {
       await next();
     } catch (err) {
-      if (process.env.NODE_ENV === 'production') {
-        rollbar.error(err, ctx.request);
-      } else {
-        console.error(err);
-      }
+      rollbar.error(err, ctx.request);
     }
   });
 
