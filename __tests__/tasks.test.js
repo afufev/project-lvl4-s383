@@ -1,7 +1,7 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
 
-import { Task, TaskStatus, sequelize } from '../models';
+import { Task, sequelize } from '../models';
 import app from '..';
 // import buildFilter from '../lib/filterBuilder';
 // import { getFilteredTasks, findOrCreateTags } from '../lib/util';
@@ -9,80 +9,10 @@ import app from '..';
 import {
   seedUsers, seedStatuses, prepareTasks, getTaskCookie,
 } from './helpers';
-import { status, updatedStatus } from './__fixtures__/tasktatuses';
 import { firstTask, secondTask } from './__fixtures__/tasks';
 
 beforeAll(() => {
   expect.extend(matchers);
-});
-
-describe('taskStatuses', () => {
-  let server;
-  let cookie;
-
-  beforeAll(async () => {
-    await sequelize.sync({ force: true });
-    await seedUsers();
-  });
-
-  beforeEach(async () => {
-    server = app().listen();
-    cookie = await getTaskCookie(server);
-  });
-
-  it('GET /taskStatuses', async () => {
-    const res = await request.agent(server)
-      .get('/taskStatuses');
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('GET /taskStatuses/new', async () => {
-    const res = await request.agent(server)
-      .get('/taskStatuses/new')
-      .set('Cookie', cookie);
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('POST /taskStatuses', async () => {
-    const res = await request.agent(server)
-      .post('/taskStatuses')
-      .set('Cookie', cookie)
-      .send({ form: status });
-    expect(res).toHaveHTTPStatus(302);
-  });
-
-  it('GET /taskStatuses/:id/settings', async () => {
-    const { id } = await TaskStatus.findOne({ where: { name: `${status.name}` } });
-    const res = await request.agent(server)
-      .get(`/taskStatuses/${id}/settings`)
-      .set('Cookie', cookie);
-    expect(res).toHaveHTTPStatus(200);
-  });
-
-  it('PATCH /taskStatuses/:id', async () => {
-    const { id } = await TaskStatus.findOne({ where: { name: `${status.name}` } });
-    const res = await request.agent(server)
-      .patch(`/taskStatuses/${id}`)
-      .set('Cookie', cookie)
-      .type('form')
-      .send({ form: updatedStatus });
-    expect(res).toHaveHTTPStatus(302);
-  });
-
-  it('DELETE /taskStatuses/:id/delete', async () => {
-    const { id } = await TaskStatus.findOne({ where: { name: `${updatedStatus.name}` } });
-    const res = await request.agent(server)
-      .delete(`/taskStatuses/${id}/delete`)
-      .set('Cookie', cookie);
-    expect(res).toHaveHTTPStatus(302);
-    const deletedStatus = await TaskStatus.findByPk(id);
-    expect(deletedStatus).toBeNull();
-  });
-
-  afterEach((done) => {
-    server.close();
-    done();
-  });
 });
 
 describe('tasks', () => {
@@ -116,15 +46,23 @@ describe('tasks', () => {
     expect(res).toHaveHTTPStatus(302);
   });
 
+  it('POST /tasks with error', async () => {
+    const res = await request.agent(server)
+      .post('/tasks')
+      .set('Cookie', cookie)
+      .send({ form: { name: '' } });
+    expect(res).toHaveHTTPStatus(200);
+  });
+
   it('GET /tasks/:id', async () => {
     const res = await request.agent(server)
       .get(`/tasks/${firstTask.id}`);
     expect(res).toHaveHTTPStatus(200);
   });
 
-  it('GET /tasks/:id/settings', async () => {
+  it('GET /tasks/:id/edit', async () => {
     const res = await request.agent(server)
-      .get(`/tasks/${firstTask.id}/settings`)
+      .get(`/tasks/${firstTask.id}/edit`)
       .set('Cookie', cookie);
     expect(res).toHaveHTTPStatus(200);
   });
@@ -136,6 +74,15 @@ describe('tasks', () => {
       .type('form')
       .send({ form: updatedTask });
     expect(res).toHaveHTTPStatus(302);
+  });
+
+  it('PATCH /tasks/:id with errors', async () => {
+    const res = await request.agent(server)
+      .patch(`/tasks/${updatedTask.id}`)
+      .set('Cookie', cookie)
+      .type('form')
+      .send({ form: { name: '' } });
+    expect(res).toHaveHTTPStatus(200);
   });
 
   it('DELETE task without authorisation', async () => {
@@ -180,18 +127,16 @@ describe('filter tasks', () => {
   });
 
   it('by status, creator and  assignee', async () => {
-    const query = { statusId: 1, assigneeId: 1, creatorId: 2 };
     const res = await request.agent(server)
       .get('/tasks')
-      .query(query);
+      .query({ statusId: 1, assigneeId: 1, creatorId: 2 });
     expect(res).toHaveHTTPStatus(200);
   });
 
   it('by tags', async () => {
-    const query = { tagsQuery: '#firstTag#secondTag' };
     const res = await request.agent(server)
       .get('/tasks')
-      .query(query);
+      .query({ tagsQuery: '#firstTag#secondTag' });
     expect(res).toHaveHTTPStatus(200);
   });
 
