@@ -9,7 +9,7 @@ export default (sequelize, DataTypes) => {
     },
   }, {});
   Tag.associate = (models) => {
-    Tag.belongsToMany(models.Task, { through: 'TaskTag' });
+    Tag.belongsToMany(models.Task, { through: 'TaskTag', foreignKey: 'tagId' });
   };
   return Tag;
 };

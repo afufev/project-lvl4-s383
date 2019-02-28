@@ -13,7 +13,7 @@ export default (sequelize, DataTypes) => {
     Task.belongsTo(models.User, { as: 'creator' });
     Task.belongsTo(models.User, { as: 'assignee' });
     Task.belongsTo(models.TaskStatus, { as: 'status' });
-    Task.belongsToMany(models.Tag, { through: 'TaskTag' });
+    Task.belongsToMany(models.Tag, { through: 'TaskTag', foreignKey: 'taskId' });
   };
 
   Task.addScope('findByPk', id => ({
@@ -46,7 +46,7 @@ export default (sequelize, DataTypes) => {
     });
   });
 
-  // this scope is supposed to find all tasks with all provided tags, not with only one of many
+  // this scope is supposed to find all tasks with all provided tags, not only with one of many
   // should work like this:
   // SELECT tasks.id, tasks.name FROM tasks
   // JOIN tasktags ON tasks.id=tasktags.task_id
