@@ -41,7 +41,7 @@ block content
             if isSignedIn()
               li.list-group-item.ml-0
                 .row
-                  a.btn.btn-secondary.btn-sm(href= urlFor('taskSettings', { id: task.id }) method='get' rel='nofollow') Edit
+                  a.btn.btn-secondary.btn-sm(href= urlFor('taskEdit', { id: task.id }) method='get' rel='nofollow') Edit
               li.list-group-item.ml-0
                 .row
                   - const target = `task${task.id}`;

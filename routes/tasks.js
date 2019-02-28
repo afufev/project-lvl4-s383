@@ -40,7 +40,7 @@ export default (router, { logger }) => {
       const task = await Task.scope({ method: ['findByPk', id] }).findOne();
       ctx.render('tasks/show', { task });
     })
-    .get('taskSettings', '/tasks/:id/settings', userAuth, async (ctx) => {
+    .get('taskEdit', '/tasks/:id/edit', userAuth, async (ctx) => {
       const { id } = ctx.params;
       const task = await Task.scope({ method: ['findByPk', id] }).findOne();
       const users = await User.findAll();
@@ -61,6 +61,7 @@ export default (router, { logger }) => {
         logger('task created: %s', JSON.stringify(task));
         ctx.redirect(router.url('tasks'));
       } catch (err) {
+        console.error(err);
         logger('task save error: %s', JSON.stringify(err));
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();
@@ -79,6 +80,7 @@ export default (router, { logger }) => {
         ctx.flash.set('The task was updated');
         ctx.redirect(`/tasks/${id}`);
       } catch (err) {
+        console.error(err);
         logger('task update error: %s', JSON.stringify(err));
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();

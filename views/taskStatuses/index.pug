@@ -14,6 +14,6 @@ block content
                 - const target = `status${status.id}`
                 .col-2
                   .row
-                    a.btn.btn-sm.btn-primary(href= urlFor('statusSettings', { id: status.id  }) method='get' rel='nofollow') Edit
+                    a.btn.btn-sm.btn-primary(href= urlFor('statusEdit', { id: status.id  }) method='get' rel='nofollow') Edit
                     button.btn.btn-sm.btn-danger.ml-1(type='button' data-toggle='modal' data-target= `#${target}`) Delete
                     +modal({ target, name: 'status', url: urlFor('deleteStatus', { id: status.id  }) })
