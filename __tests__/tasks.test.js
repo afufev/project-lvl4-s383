@@ -3,9 +3,11 @@ import matchers from 'jest-supertest-matchers';
 
 import { Task, TaskStatus, sequelize } from '../models';
 import app from '..';
+// import buildFilter from '../lib/filterBuilder';
+// import { getFilteredTasks, findOrCreateTags } from '../lib/util';
 
 import {
-  seedUsers, seedStatuses, /* prepareTasks, */getTaskCookie,
+  seedUsers, seedStatuses, prepareTasks, getTaskCookie,
 } from './helpers';
 import { status, updatedStatus } from './__fixtures__/tasktatuses';
 import { firstTask, secondTask } from './__fixtures__/tasks';
@@ -136,6 +138,12 @@ describe('tasks', () => {
     expect(res).toHaveHTTPStatus(302);
   });
 
+  it('DELETE task without authorisation', async () => {
+    const res = await request.agent(server)
+      .delete(`/tasks/${updatedTask.id}/delete`);
+    expect(res).toHaveHTTPStatus(302);
+  });
+
   it('DELETE /tasks/:id/delete', async () => {
     const res = await request.agent(server)
       .delete(`/tasks/${updatedTask.id}/delete`)
@@ -151,42 +159,44 @@ describe('tasks', () => {
   });
 });
 
-// describe('filter tasks', () => {
-//   beforeAll(async () => {
-//     await sequelize.sync({ force: true });
-//     await seedUsers();
-//     await seedStatuses();
-//     await prepareTasks();
-//   });
-//
-//   let server;
-//
-//   beforeEach(() => {
-//     server = app().listen();
-//   });
-//
-//   it('all tasks', async () => {
-//     const res = await request.agent(server)
-//       .get('/tasks');
-//     expect(res).toHaveHTTPStatus(200);
-//   });
-//
-//   it('by status, creator and  assignee', async () => {
-//     const res = await request.agent(server)
-//       .get('/tasks')
-//       .query({ statusId: 1, assigneeId: 1, creatorId: 2 });
-//     expect(res).toHaveHTTPStatus(200);
-//   });
-//
-//   it('by tags', async () => {
-//     const res = await request.agent(server)
-//       .get('/tasks')
-//       .query({ tagsQuery: '#firstTag#secondTag' });
-//     expect(res).toHaveHTTPStatus(200);
-//   });
-//
-//   afterEach(async (done) => {
-//     server.close();
-//     done();
-//   });
-// });
+describe('filter tasks', () => {
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+    await seedUsers();
+    await seedStatuses();
+    await prepareTasks();
+  });
+
+  let server;
+
+  beforeEach(() => {
+    server = app().listen();
+  });
+
+  it('all tasks', async () => {
+    const res = await request.agent(server)
+      .get('/tasks');
+    expect(res).toHaveHTTPStatus(200);
+  });
+
+  it('by status, creator and  assignee', async () => {
+    const query = { statusId: 1, assigneeId: 1, creatorId: 2 };
+    const res = await request.agent(server)
+      .get('/tasks')
+      .query(query);
+    expect(res).toHaveHTTPStatus(200);
+  });
+
+  it('by tags', async () => {
+    const query = { tagsQuery: '#firstTag#secondTag' };
+    const res = await request.agent(server)
+      .get('/tasks')
+      .query(query);
+    expect(res).toHaveHTTPStatus(200);
+  });
+
+  afterEach(async (done) => {
+    server.close();
+    done();
+  });
+});

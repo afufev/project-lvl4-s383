@@ -1,32 +1,40 @@
 import faker from 'faker';
+import { random } from 'lodash';
 
 export const firstTask = {
   id: 1,
   name: faker.hacker.noun(),
   description: faker.hacker.phrase(),
-  statusId: 1,
-  assigneeId: 1,
-  creatorId: 2,
-  tags: '#firstTag#secondTag',
+  statusId: random(1, 4),
+  assigneeId: random(1, 4),
+  creatorId: random(1, 4),
 };
+
 export const secondTask = {
   id: 2,
   name: faker.hacker.noun(),
   description: faker.hacker.phrase(),
-  statusId: 2,
-  assigneeId: 2,
-  creatorId: 1,
-  tags: '#secondTag/firstTag',
+  statusId: random(1, 4),
+  assigneeId: random(1, 4),
+  creatorId: random(1, 4),
 };
+
 export const thirdTask = {
   id: 3,
   name: faker.hacker.noun(),
   description: faker.hacker.phrase(),
-  statusId: 3,
-  assigneeId: 3,
-  creatorId: 4,
-  tags: ['firstTag', 'secondTag'],
+  statusId: random(1, 4),
+  assigneeId: random(1, 4),
+  creatorId: random(1, 4),
 };
 
-
 export const taskArr = [firstTask, secondTask, thirdTask];
+
+export const bigTaskArr = new Array(200).fill(null).map((el, index) => ({
+  id: index + 1,
+  name: faker.hacker.noun(),
+  description: faker.hacker.phrase(),
+  statusId: random(1, 4),
+  assigneeId: random(1, 4),
+  creatorId: random(1, 4),
+}));

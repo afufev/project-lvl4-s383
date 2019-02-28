@@ -4,7 +4,7 @@ import {
 } from '../../models';
 import { user, usersArr } from '../__fixtures__/users';
 import { statusArr } from '../__fixtures__/tasktatuses';
-import { taskArr } from '../__fixtures__/tasks';
+import { taskArr, bigTaskArr } from '../__fixtures__/tasks';
 import { tagArr } from '../__fixtures__/tags';
 
 
@@ -21,7 +21,6 @@ export const getTaskCookie = async (server) => {
     .send({ form: user });
   return authRes.headers['set-cookie'];
 };
-
 export const seedUsers = () => User.bulkCreate([...usersArr, user]);
 
 export const seedStatuses = () => TaskStatus.bulkCreate(statusArr);
@@ -35,7 +34,8 @@ export const prepareTasks = async () => {
   const firstTagId = 1;
   const secondTagId = 2;
   await firstTask.setTags([firstTagId, secondTagId]);
-  // await secondTask.setTags(firstTagId);
   await secondTask.setTags([firstTagId, secondTagId]);
   await thirdTask.setTags(secondTagId);
 };
+
+export const preparePaginationTasks = () => Task.bulkCreate(bigTaskArr);
