@@ -11,19 +11,16 @@ export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
       const { query } = ctx.request;
+      console.log('query', query);
       const { userId: currentUser } = ctx.session;
-      try {
-        const filter = buildFilter(query);
-        await getFilteredTasks(filter);
-      } catch (err) {
-        console.error(err);
-      }
       const filter = buildFilter(query);
+      console.log('filter', filter);
       const tasks = await getFilteredTasks(filter);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
       const paginationObject = await getPaginationObject(query);
+      console.log('pagination', paginationObject);
       ctx.render('tasks', {
         tasks,
         users: [{ id: 'any', fullName: 'any' }, ...users],
@@ -67,7 +64,6 @@ export default (router, { logger }) => {
         logger('task created: %s', JSON.stringify(task));
         ctx.redirect(router.url('tasks'));
       } catch (err) {
-        console.error(err);
         logger('task save error: %s', JSON.stringify(err));
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();
@@ -86,7 +82,6 @@ export default (router, { logger }) => {
         ctx.flash.set('The task was updated');
         ctx.redirect(`/tasks/${id}`);
       } catch (err) {
-        console.error(err);
         logger('task update error: %s', JSON.stringify(err));
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();

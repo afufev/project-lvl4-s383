@@ -18,7 +18,6 @@ mixin modal(options = {})
 mixin order(filter, property, title)
   - const prevOrderBy = _.get(filter, 'orderBy');
   - const prevDirection = _.get(filter, 'orderDirection');
-  - const query = Object.assign({}, filter, { orderBy: property, prevOrderBy, prevDirection });
   - const isAscending = prevDirection === 'ASC'
   - const isActive = property === prevOrderBy;
   li.nav-item
@@ -26,7 +25,7 @@ mixin order(filter, property, title)
       a.nav-link(
         class={ 'active': isActive }
         class={ 'dropdown-toggle': isActive }
-        href= urlFor('tasks', { query })
+        href= urlFor('tasks', { query: { orderBy: property, prevOrderBy, prevDirection } })
       )= title
 
 mixin pagination(paginationObject)
