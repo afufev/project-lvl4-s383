@@ -19,7 +19,8 @@ describe('task pagination', () => {
     { number: 8, firstButton: 6, lastButton: 10 },
     { number: 11, firstButton: 9, lastButton: 13 },
     { number: 15, firstButton: 13, lastButton: 17 },
-    { number: 16, firstButton: 16, lastButton: 20 },
+    { number: 16, firstButton: 14, lastButton: 18 },
+    { number: 17, firstButton: 16, lastButton: 20 },
     { number: 20, firstButton: 16, lastButton: 20 },
   ];
 
