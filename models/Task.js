@@ -10,10 +10,10 @@ export default (sequelize, DataTypes) => {
     description: DataTypes.TEXT,
   }, {});
   Task.associate = (models) => {
-    Task.belongsTo(models.User, { as: 'creator', foreignKey: 'creatorId' });
-    Task.belongsTo(models.User, { as: 'assignee', foreignKey: 'assigneeId' });
-    Task.belongsTo(models.TaskStatus, { as: 'status', foreignKey: 'statusId' });
-    Task.belongsToMany(models.Tag, { through: 'TaskTag', foreignKey: 'taskId' });
+    Task.belongsTo(models.User, { as: 'creator' });
+    Task.belongsTo(models.User, { as: 'assignee' });
+    Task.belongsTo(models.TaskStatus, { as: 'status' });
+    Task.belongsToMany(models.Tag, { through: 'TaskTag' });
   };
 
   Task.addScope('findByPk', id => ({
@@ -27,7 +27,6 @@ export default (sequelize, DataTypes) => {
   }));
 
   Task.addScope('filtered', (filter) => {
-    console.log(filter);
     const {
       limit, offset, orderBy, orderDirection, tags, statusId, assigneeId, creatorId,
     } = filter;

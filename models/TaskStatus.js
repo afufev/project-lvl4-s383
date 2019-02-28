@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
     },
   }, {});
   TaskStatus.associate = (models) => {
-    TaskStatus.hasMany(models.Task, { as: 'status', foreignKey: 'statusId' });
+    TaskStatus.hasMany(models.Task, { as: 'status' });
   };
   return TaskStatus;
 };
