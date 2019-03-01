@@ -21,6 +21,7 @@ export default (router, { logger }) => {
         console.error(err);
       }
       const { tasks, count } = await getFilteredTasks(filter);
+      console.log('count', count);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
