@@ -44,7 +44,7 @@ export default (sequelize, DataTypes) => {
       order,
       offset,
       limit,
-      subQuery: false,
+      // subQuery: false,
     });
   });
 
