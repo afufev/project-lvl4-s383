@@ -33,13 +33,13 @@ export default (sequelize, DataTypes) => {
       limit, offset, orderBy, orderDirection, tags, statusId, assigneeId, creatorId,
     } = filter;
     const order = [[orderBy, orderDirection]];
-    const tagsQuery = tags === null ? tags : { name: tags };
+    const tagsWhere = tags === null ? tags : { name: tags };
     return ({
       include: [
         { model: sequelize.models.User, as: 'creator', where: creatorId },
         { model: sequelize.models.User, as: 'assignee', where: assigneeId },
         { model: sequelize.models.TaskStatus, as: 'status', where: statusId },
-        { model: sequelize.models.Tag, where: tagsQuery },
+        { model: sequelize.models.Tag, where: tagsWhere },
       ],
       order,
       offset,
