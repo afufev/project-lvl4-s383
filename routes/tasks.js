@@ -20,21 +20,25 @@ export default (router, { logger }) => {
       } catch (err) {
         console.error(err);
       }
-      const { count, rows: tasks } = await getFilteredTasks(filter);
+      const { tasks, count } = await getFilteredTasks(filter);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
       const paginationObject = await getPaginationObject(query, count);
       console.log('pagination', paginationObject);
-      ctx.render('tasks', {
-        tasks,
-        users: [{ id: 'any', fullName: 'any' }, ...users],
-        statuses: [{ id: 'any', name: 'any' }, ...statuses],
-        currentUser,
-        tags,
-        filter,
-        paginationObject,
-      });
+      try {
+        ctx.render('tasks', {
+          tasks,
+          users: [{ id: 'any', fullName: 'any' }, ...users],
+          statuses: [{ id: 'any', name: 'any' }, ...statuses],
+          currentUser,
+          tags,
+          filter,
+          paginationObject,
+        });
+      } catch (err) {
+        console.error(err);
+      }
     })
     .get('newTask', '/tasks/new', userAuth, async (ctx) => {
       const users = await User.findAll();
@@ -53,7 +57,9 @@ export default (router, { logger }) => {
       const task = await Task.scope({ method: ['findByPk', id] }).findOne();
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
-      const tags = await Tag.findAll();
+      console.log(task);
+      const tags = task.Tags.map(tag => tag.name).join(' ');
+      console.log(await task.getTags());
       ctx.render('tasks/edit', { f: buildFormObj(task), users, statuses, tags }); // eslint-disable-line
     })
     .post('createTask', '/tasks', userAuth, async (ctx) => {
@@ -79,13 +85,15 @@ export default (router, { logger }) => {
       const { id } = ctx.params;
       const { form: updatedTask } = ctx.request.body;
       const task = await Task.findByPk(id);
-      const tags = await findOrCreateTags(updatedTask.tags);
+      const tags = await findOrCreateTags(updatedTask.tagsQuery);
+      console.log(updatedTask.tagsQuery);
+      console.log(tags);
       try {
         await task.update(updatedTask);
         await task.setTags(tags);
         logger('task updated with data: %s', task);
         ctx.flash.set('The task was updated');
-        ctx.redirect(`/tasks/${id}`);
+        ctx.redirect(router.url('showTask', { id }));
       } catch (err) {
         logger('task update error: %s', JSON.stringify(err));
         const users = await User.findAll();
