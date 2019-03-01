@@ -34,15 +34,16 @@ export default (sequelize, DataTypes) => {
     } = filter;
     const order = [[orderBy, orderDirection]];
     const tagsWhere = tags === null ? tags : { name: tags };
+    const isRequired = whereClause => (whereClause !== null);
     return ({
       order,
       offset,
       limit,
       include: [
-        { model: sequelize.models.User, as: 'creator', where: creatorId },
-        { model: sequelize.models.User, as: 'assignee', where: assigneeId },
-        { model: sequelize.models.TaskStatus, as: 'status', where: statusId },
-        { model: sequelize.models.Tag, where: tagsWhere },
+        { model: sequelize.models.User, as: 'creator', required: isRequired(creatorId), where: creatorId },
+        { model: sequelize.models.User, as: 'assignee', required: isRequired(assigneeId), where: assigneeId },
+        { model: sequelize.models.TaskStatus, as: 'status', required: isRequired(statusId), where: statusId },
+        { model: sequelize.models.Tag, required: isRequired(tagsWhere), where: tagsWhere },
       ],
     });
   });
