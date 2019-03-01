@@ -35,6 +35,7 @@ export default (sequelize, DataTypes) => {
     const order = [[orderBy, orderDirection]];
     const tagsWhere = tags === null ? tags : { name: tags };
     return ({
+      distinct: true,
       order,
       offset,
       limit,
@@ -44,7 +45,6 @@ export default (sequelize, DataTypes) => {
         { model: sequelize.models.TaskStatus, as: 'status', where: statusId },
         { model: sequelize.models.Tag, where: tagsWhere },
       ],
-      distinct: true,
     });
   });
 
