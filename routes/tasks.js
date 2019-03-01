@@ -15,11 +15,11 @@ export default (router, { logger }) => {
       const { userId: currentUser } = ctx.session;
       const filter = buildFilter(query);
       console.log('filter', filter);
-      const tasks = await getFilteredTasks(filter);
+      const { count, rows: tasks } = await getFilteredTasks(filter);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
-      const paginationObject = await getPaginationObject(query);
+      const paginationObject = await getPaginationObject(query, count);
       console.log('pagination', paginationObject);
       ctx.render('tasks', {
         tasks,

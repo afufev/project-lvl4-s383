@@ -44,7 +44,6 @@ export default (sequelize, DataTypes) => {
       order,
       offset,
       limit,
-      // subQuery: false,
     });
   });
 
@@ -59,6 +58,7 @@ export default (sequelize, DataTypes) => {
   Task.addScope('tags', tags => ({
     group: ['Task.id'],
     having: sequelize.where(sequelize.fn('COUNT', sequelize.col('*')), { [sequelize.Op.gte]: tags.length }),
+    subQuery: false,
     include: [
       { model: sequelize.models.Tag, where: { name: { [sequelize.Op.or]: tags } } },
     ],
