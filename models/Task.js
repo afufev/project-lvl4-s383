@@ -36,6 +36,7 @@ export default (sequelize, DataTypes) => {
     const tagsWhere = tags === null ? tags : { name: tags };
     const isRequired = whereClause => (whereClause !== null);
     return ({
+      subQuery: false,
       order,
       offset,
       limit,
