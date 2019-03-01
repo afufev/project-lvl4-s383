@@ -35,7 +35,6 @@ export default (sequelize, DataTypes) => {
     const order = [[orderBy, orderDirection]];
     const tagsWhere = tags === null ? tags : { name: tags };
     return ({
-      distinct: true,
       order,
       offset,
       limit,

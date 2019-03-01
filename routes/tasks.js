@@ -16,7 +16,8 @@ export default (router, { logger }) => {
       const filter = buildFilter(query);
       console.log('filter', filter);
       try {
-        await getFilteredTasks(filter);
+        const { tasks, count } = await getFilteredTasks(filter);
+        await getPaginationObject(query, count);
       } catch (err) {
         console.error(err);
       }
