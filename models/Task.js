@@ -35,15 +35,15 @@ export default (sequelize, DataTypes) => {
     const order = [[orderBy, orderDirection]];
     const tagsWhere = tags === null ? tags : { name: tags };
     return ({
+      order,
+      offset,
+      limit,
       include: [
         { model: sequelize.models.User, as: 'creator', where: creatorId },
         { model: sequelize.models.User, as: 'assignee', where: assigneeId },
         { model: sequelize.models.TaskStatus, as: 'status', where: statusId },
         { model: sequelize.models.Tag, where: tagsWhere },
       ],
-      order,
-      offset,
-      limit,
       distinct: true,
     });
   });
