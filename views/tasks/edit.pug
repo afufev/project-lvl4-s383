@@ -23,7 +23,7 @@ block content
           .form-group.row
             label.col-sm-2.col-form-label Tags
             .col-sm-10
-              +input(f, 'tagsQuery', { title: 'Tags', as: 'text' })
+              input.form-control.form-control-sm.required(name='form[tagsQuery]' type='text' value= tags placeholder= 'Tags' )
           .form-group.row
             label.col-sm-2.col-form-label Assign to
             .col-sm-3
