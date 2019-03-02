@@ -41,3 +41,17 @@ mixin select(property, options = {})
       option(value= choice.id selected= (choice.id === options.selected))= choice[options.title]
 
 // mixin switch()
+
+mixin thFilter(property, options = {})
+  - const filterId = `${options.name}Filter`;
+  th(scope= 'col')
+    .dropdown
+      a.dropdown-toggle(href='#' role='button' id= filterId data-toggle='dropdown')= property
+      .dropdown-menu.dropdown-menu-right(aria-labeledby= filterId)
+        h6.dropdown-header= `filter by ${_.toLower(property)}`
+        form.px-2.py-2
+          select.form-control.form-control-sm(name= options.name)
+            each choice in options.choices
+              option(value= choice.id selected= (choice.id === options.selected))= choice[options.title]
+          input.btn.btn-outline-success.btn-sm.mt-2(type= 'submit' value= 'Apply')
+

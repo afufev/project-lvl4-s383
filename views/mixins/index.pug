@@ -28,18 +28,18 @@ mixin order(searchForm, property, title)
         href= urlFor('tasks', { query: { orderBy: property, prevOrderBy, prevDirection } })
       )= title
 
-mixin pagination(paginationObject)
+mixin pagination(property, paginationObject)
   - const firstLink = _.get(paginationObject, 'firstLink');
   - const lastLink = _.get(paginationObject, 'lastLink');
   - const chunk = _.get(paginationObject, 'chunk');
   nav
     ul.pagination
       li.page-item
-        a.page-link(href= urlFor('tasks', { query: firstLink.query }))
+        a.page-link(href= urlFor(property, { query: firstLink.query }))
             span(aria-hidden='true') &laquo;
       each item in chunk
         li.page-item(class={ active: item.isActive })
-          a.page-link(href= urlFor('tasks', { query: item.query }))= item.number
+          a.page-link(href= urlFor(property, { query: item.query }))= item.number
       li.page-item
-        a.page-link(href= urlFor('tasks', { query: lastLink.query }))
+        a.page-link(href= urlFor(property, { query: lastLink.query }))
           span(aria-hidden='true') &raquo;

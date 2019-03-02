@@ -2,12 +2,17 @@ import buildFormObj from '../lib/formObjectBuilder';
 import { encrypt } from '../lib/secure';
 import { User } from '../models';
 import userAuth from '../lib/middlewares';
+import { sanitizeQuery } from '../lib/util';
+import getPaginationObject from '../lib/pagination';
 
 export default (router) => {
   router
     .get('users', '/users', async (ctx) => {
-      const users = await User.findAll();
-      ctx.render('users', { users });
+      const { query = {} } = ctx.request;
+      const { offset } = sanitizeQuery(query);
+      const { rows: users, count } = await User.findAndCountAll({ offset, limit: 10 });
+      const paginationObject = getPaginationObject({ offset }, count);
+      ctx.render('users', { users, paginationObject });
     })
     .get('newUser', '/users/new', (ctx) => {
       const user = User.build();

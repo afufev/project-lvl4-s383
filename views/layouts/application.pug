@@ -45,16 +45,6 @@ html(lang='en')
       .alert.alert-info.alert-dismissable.fade.show.px-5.py-3= msg
         button.close(type="button" data-dismiss="alert" aria-label="Close")
           span(aria-hidden="true") &times;
-    .container-fluid
-      .row.justify-content-center
-        ul.nav.nav-tabs
-          li.nav-item
-            a.nav-link(href=urlFor('users')) Users
-          li.nav-item
-            a.nav-link(href= urlFor('tasks')) Tasks
-          li.nav-item
-            a.nav-link(href= urlFor('taskStatuses')) Task statuses
-
     block content
     // .footer.container-lg.px-3
     //   .position-relative.d-flex.flex-justify-between.pt-6.pb-2.mt-6.f6.text-gray.border-top.border-gray-light
