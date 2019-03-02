@@ -44,35 +44,36 @@ block content
         a.btn.btn-success(href= urlFor('tasks', { query: { creatorId: currentUser }})) My tasks
   .row.justify-content-center.mt-2
     .col-12.col-md-8
-      .table-responsive-md
-        table.table.table-stripped.table-hover
-          thead
-            tr
-              th(scope= 'col') Task
-              th(scope= 'col') Status
-              th(scope= 'col') Tags
-              th(scope= 'col') Assignee
-          tbody
-            each task in tasks
-              - const id = task.id ? task.id : task.dataValues.id
-              - const name = task.name ? task.name : task.dataValues.name
-              - const status =  task.status ?  task.status.name : ''
+      .card.mb-3
+        .card-body.p-0
+          table.table.table-hover.table-borderless.p-0.m-0(style={'font-size': '.875rem'})
+            thead.thead-light
               tr
-                td
-                  .row.pl-4.pt-2
-                    a.h6.font-weight-bold(href= urlFor('showTask', { id }))= name
-                  .row.pl-4.font-weight-light= `#${task.id} created on ${formatDate(task.createdAt)} by`
-                    a.pl-1(href= urlFor('showUser', { id: task.creator.id }))= task.creator.fullName
-                td= status
-                td
-                  each tag in task.Tags
-                    .row.mt-1
-                      a.badge.badge-info(href= urlFor('tasks', { query: { tagsQuery: tag.name } }))= `#${tag.name}`
-                td
-                  if task.assignee.fullName
-                    a(href= urlFor('showUser', { id: task.assignee.id }))= task.assignee.fullName
-                  else
-                    ='any'
+                th(scope= 'col') Task
+                th(scope= 'col') Status
+                th(scope= 'col') Tags
+                th(scope= 'col') Assignee
+            tbody
+              each task in tasks
+                - const id = task.id ? task.id : task.dataValues.id
+                - const name = task.name ? task.name : task.dataValues.name
+                - const status =  task.status ?  task.status.name : ''
+                tr
+                  td
+                    .row.pl-4.pt-2
+                      a.h6.font-weight-bold(href= urlFor('showTask', { id }))= name
+                    .row.pl-4.font-weight-light= `#${task.id} created on ${formatDate(task.createdAt)} by`
+                      a.pl-1(href= urlFor('showUser', { id: task.creator.id }))= task.creator.fullName
+                  td= status
+                  td
+                    each tag in task.Tags
+                      .row.mt-1
+                        a.badge.badge-info(href= urlFor('tasks', { query: { tagsQuery: tag.name } }))= `#${tag.name}`
+                  td
+                    if task.assignee.fullName
+                      a(href= urlFor('showUser', { id: task.assignee.id }))= task.assignee.fullName
+                    else
+                      ='any'
   .row
     .col-0.col-md-2
     .col-12.col-md-3
