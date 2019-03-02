@@ -1,7 +1,7 @@
 import buildFormObj from '../lib/formObjectBuilder';
 import buildFilter from '../lib/filterBuilder';
 import userAuth from '../lib/middlewares';
-import { getFilteredTasks, findOrCreateTags } from '../lib/util';
+import { getFilteredTasks, findOrCreateTags, sanitizeQuery } from '../lib/util';
 import getPaginationObject from '../lib/pagination';
 import {
   User, Task, TaskStatus, Tag,
@@ -13,7 +13,9 @@ export default (router, { logger }) => {
       const { query } = ctx.request;
       console.log('query', query);
       const { userId: currentUser } = ctx.session;
-      const filter = buildFilter(query);
+      const sanitizedQuery = sanitizeQuery(query);
+      console.log('sanitized', sanitizedQuery);
+      const filter = buildFilter(sanitizedQuery);
       console.log('filter', filter);
       try {
         const { tasks, count } = await getFilteredTasks(filter);
@@ -26,7 +28,7 @@ export default (router, { logger }) => {
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
-      const paginationObject = await getPaginationObject(query, count);
+      const paginationObject = await getPaginationObject(sanitizedQuery, count);
       console.log('pagination', paginationObject);
       try {
         ctx.render('tasks', {
@@ -35,7 +37,7 @@ export default (router, { logger }) => {
           statuses: [{ id: 'any', name: 'any' }, ...statuses],
           currentUser,
           tags,
-          filter,
+          searchForm: sanitizedQuery,
           paginationObject,
         });
       } catch (err) {

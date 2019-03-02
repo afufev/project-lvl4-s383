@@ -15,9 +15,9 @@ mixin modal(options = {})
           button.btn.btn-secondary(type='button' data-dismiss='modal') No, I don't want
           a.btn.btn-danger(href= url data-method='delete' rel='nofollow')= `Delete ${name}`
 
-mixin order(filter, property, title)
-  - const prevOrderBy = _.get(filter, 'orderBy');
-  - const prevDirection = _.get(filter, 'orderDirection');
+mixin order(searchForm, property, title)
+  - const prevOrderBy = _.get(searchForm, 'orderBy');
+  - const prevDirection = _.get(searchForm, 'orderDirection');
   - const isAscending = prevDirection === 'ASC'
   - const isActive = property === prevOrderBy;
   li.nav-item

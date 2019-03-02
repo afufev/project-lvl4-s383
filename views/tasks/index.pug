@@ -11,15 +11,15 @@ block content
             .col
               .form-group.col-md-9.border-left.mx-5.col-12
                 label.h7 Status
-                +select('Status', { name: 'statusId', choices: statuses, title: 'name', selected: filter.statusId })
+                +select('Status', { name: 'statusId', choices: statuses, title: 'name', selected: searchForm.statusId })
             .col
               .form-group.col-md-9.border-left.mx-5.col-12
                 label.h7 Assignee
-                +select('Assignee', { name: 'assigneeId', choices: users, title: 'fullName', selected: filter.assigneeId })
+                +select('Assignee', { name: 'assigneeId', choices: users, title: 'fullName', selected: searchForm.assigneeId })
             .col
               .form-group.col-md-9.border-left.mx-5.col-12
                 label.h7 Creator
-                +select('Creator', { name: 'creatorId', choices: users, title: 'fullName', selected: filter.creatorId })
+                +select('Creator', { name: 'creatorId', choices: users, title: 'fullName', selected: searchForm.creatorId })
         .row.justify-content-center Tags
           .col-md-7
             .form-group
@@ -34,11 +34,11 @@ block content
       ul.nav
         li.nav-item
           p.pt-2 Sort by:
-        +order(filter, 'createdAt', 'Created at')
-        +order(filter, 'updatedAt', 'Updated at')
-        +order(filter, 'creatorId', 'Creator')
-        +order(filter, 'assigneeId', 'Assignee')
-        +order(filter, 'statusId', 'Status')
+        +order(searchForm, 'createdAt', 'Created at')
+        +order(searchForm, 'updatedAt', 'Updated at')
+        +order(searchForm, 'creatorId', 'Creator')
+        +order(searchForm, 'assigneeId', 'Assignee')
+        +order(searchForm, 'statusId', 'Status')
     if isSignedIn()
       .col-1
         a.btn.btn-success(href= urlFor('tasks', { query: { creatorId: currentUser }})) My tasks
