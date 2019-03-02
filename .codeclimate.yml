@@ -4,3 +4,12 @@ engines:
     config:
       languages:
       - javascript:
+exclude_patterns:
+  - "config/"
+  - "dist"
+  - "**/node_modules"/
+  - "__tests__/"
+  - "/models/"
+  - "/migrations/"
+  - "/seeders/"
+  - "public/"
