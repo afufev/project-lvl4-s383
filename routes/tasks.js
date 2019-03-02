@@ -77,7 +77,7 @@ export default (router, { logger }) => {
       try {
         await task.update(updatedTask);
         await task.setTags(tags);
-        ctx.flash.set('Task was updated');
+        // ctx.flash.set('Task was updated');
         ctx.redirect(router.url('showTask', { id }));
       } catch (err) {
         logger('task update error: %o', err);

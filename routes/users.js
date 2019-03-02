@@ -1,6 +1,7 @@
 import buildFormObj from '../lib/formObjectBuilder';
 import { encrypt } from '../lib/secure';
 import { User } from '../models';
+import userAuth from '../lib/middlewares';
 
 export default (router) => {
   router
@@ -12,12 +13,12 @@ export default (router) => {
       const user = User.build();
       ctx.render('users/new', { f: buildFormObj(user) });
     })
-    .get('userProfile', '/account/profile/edit', async (ctx) => {
+    .get('userProfile', '/account/profile/edit', userAuth, async (ctx) => {
       const { userId: id } = ctx.session;
       const user = await User.findByPk(id);
       ctx.render('users/profile', { f: buildFormObj(user), currentUrl: router.url('userProfile') });
     })
-    .get('userSettings', '/account/settings/edit', (ctx) => {
+    .get('userSettings', '/account/settings/edit', userAuth, (ctx) => {
       ctx.render('users/account', { f: buildFormObj({}), currentUrl: router.url('userSettings') });
     })
     .get('showUser', '/users/:id', async (ctx) => {
@@ -79,14 +80,9 @@ export default (router) => {
     .delete('deleteUser', '/account/settings/delete', async (ctx) => {
       const { userId: id } = ctx.session;
       const user = await User.findByPk(id);
-      try {
-        await user.destroy();
-        ctx.flash.set('Your profile was deleted. Good bye!');
-        ctx.session = {};
-        ctx.redirect(router.url('root'));
-      } catch (err) {
-        ctx.flash.set('An error occured on deleting your page. Try again');
-        ctx.render('users/edit', { f: buildFormObj(user, err) });
-      }
+      await user.destroy();
+      ctx.flash.set('Your profile was deleted. Good bye!');
+      ctx.session = {};
+      ctx.redirect(router.url('root'));
     });
 };
