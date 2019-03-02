@@ -32,9 +32,9 @@ export default (router, { logger }) => {
     .get('newTask', '/tasks/new', userAuth, async (ctx) => {
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
-      const tags = await Tag.findAll();
+      // const tags = await Tag.findAll();
       const task = Task.build();
-      ctx.render('tasks/new', { f: buildFormObj(task), users, statuses, tags }); // eslint-disable-line
+      ctx.render('tasks/new', { f: buildFormObj(task), users, statuses });
     })
     .get('showTask', '/tasks/:id', async (ctx) => {
       const { id } = ctx.params;
@@ -46,8 +46,8 @@ export default (router, { logger }) => {
       const task = await Task.scope({ method: ['findByPk', id] }).findOne();
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
-      const tags = task.Tags.map(tag => tag.name).join(' ');
-      ctx.render('tasks/edit', { f: buildFormObj(task), users, statuses, tags }); // eslint-disable-line
+      // const tags = task.Tags.map(tag => tag.name).join(' ');
+      ctx.render('tasks/edit', { f: buildFormObj(task), users, statuses });
     })
     .post('createTask', '/tasks', userAuth, async (ctx) => {
       const { form } = ctx.request.body;
@@ -59,13 +59,13 @@ export default (router, { logger }) => {
         await task.save();
         await task.setTags(tags);
         ctx.flash.set('Task has been created');
-        logger('task created: %s', JSON.stringify(task));
+        logger('task created: %o', task);
         ctx.redirect(router.url('tasks'));
       } catch (err) {
-        logger('task save error: %s', JSON.stringify(err));
+        logger('task save error: %o', err);
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();
-        ctx.render('tasks/new', { f: buildFormObj(task, err), users, statuses, tags }); // eslint-disable-line
+        ctx.render('tasks/new', { f: buildFormObj(task, err), users, statuses });
       }
     })
     .patch('updateTask', '/tasks/:id', userAuth, async (ctx) => {
@@ -80,10 +80,10 @@ export default (router, { logger }) => {
         ctx.flash.set('The task was updated');
         ctx.redirect(router.url('showTask', { id }));
       } catch (err) {
-        logger('task update error: %s', JSON.stringify(err));
+        logger('task update error: %o', err);
         const users = await User.findAll();
         const statuses = await TaskStatus.findAll();
-        ctx.render('tasks/edit', { f: buildFormObj(task, err), users, statuses, tags }); // eslint-disable-line
+        ctx.render('tasks/edit', { f: buildFormObj(task, err), users, statuses });
       }
     })
     .delete('deleteTask', '/tasks/:id/delete', userAuth, async (ctx) => {
@@ -92,10 +92,9 @@ export default (router, { logger }) => {
       try {
         await task.destroy();
         ctx.flash.set('The task was deleted');
-        ctx.redirect(router.url('tasks'));
       } catch (err) {
         ctx.flash.set('An error occured on deleting the task. Try again');
-        ctx.redirect(router.url('root'));
       }
+      ctx.redirect(router.url('tasks'));
     });
 };

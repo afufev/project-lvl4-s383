@@ -42,7 +42,7 @@ html(lang='en')
               a.btn.btn-outline-light(href=urlFor('newUser')) Sign Up
     - const msg = flash.get()
     if msg
-      .alert.alert-info.alert-dismissable.fade.show.px-5.py-2= msg
+      .alert.alert-info.alert-dismissable.fade.show.px-5.py-3= msg
         button.close(type="button" data-dismiss="alert" aria-label="Close")
           span(aria-hidden="true") &times;
     block content
