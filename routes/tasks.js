@@ -55,11 +55,11 @@ export default (router, { logger }) => {
       const taskForm = { ...form, creatorId };
       const tags = await findOrCreateTags(form.tagsQuery);
       const task = Task.build(taskForm);
+      logger('createing task: %o', task);
       try {
         await task.save();
         await task.setTags(tags);
         ctx.flash.set('Task has been created');
-        logger('task created: %o', task);
         ctx.redirect(router.url('tasks'));
       } catch (err) {
         logger('task save error: %o', err);
@@ -73,11 +73,11 @@ export default (router, { logger }) => {
       const { form: updatedTask } = ctx.request.body;
       const task = await Task.findByPk(id);
       const tags = await findOrCreateTags(updatedTask.tagsQuery);
+      logger('updating task with data: %s', updatedTask);
       try {
         await task.update(updatedTask);
         await task.setTags(tags);
-        logger('task updated with data: %s', task);
-        ctx.flash.set('The task was updated');
+        ctx.flash.set('Task was updated');
         ctx.redirect(router.url('showTask', { id }));
       } catch (err) {
         logger('task update error: %o', err);
