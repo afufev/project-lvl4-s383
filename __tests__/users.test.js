@@ -99,6 +99,24 @@ describe('users', () => {
     expect(res2).toHaveHTTPStatus(200);
   });
 
+  it('GET /users/:id', async () => {
+    const cookie = await getCookie(server);
+
+    const res = await request.agent(server)
+      .get(`/users/${user.id}`)
+      .set('Cookie', cookie);
+    expect(res).toHaveHTTPStatus(200);
+  });
+
+  it('GET /account/settings/edit', async () => {
+    const cookie = await getCookie(server);
+
+    const res = await request.agent(server)
+      .get('/account/settings/edit')
+      .set('Cookie', cookie);
+    expect(res).toHaveHTTPStatus(200);
+  });
+
   it('GET /account/profile/edit', async () => {
     const cookie = await getCookie(server);
 
