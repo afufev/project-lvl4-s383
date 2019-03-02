@@ -28,42 +28,5 @@ export default (sequelize, DataTypes) => {
     ],
   }));
 
-  // Task.addScope('filtered', (filter) => {
-  //   const {
-  //     limit, offset, orderBy, orderDirection, tags, statusId, assigneeId, creatorId,
-  //   } = filter;
-  //   const order = [[orderBy, orderDirection]];
-  //   const tagsWhere = tags === null ? tags : { name: tags };
-  //   return ({
-  //     subQuery: false,
-  //     order,
-  //     offset,
-  //     limit,
-  //     include: [
-  //       { model: sequelize.models.User, as: 'creator', where: creatorId },
-  //       { model: sequelize.models.User, as: 'assignee', where: assigneeId },
-  //       { model: sequelize.models.TaskStatus, as: 'status', where: statusId },
-  //       { model: sequelize.models.Tag, where: tagsWhere },
-  //     ],
-  //   });
-  // });
-
-  // // this scope is supposed to find all tasks with all provided tags, not only with one of many
-  // // should work like this:
-  // // SELECT tasks.id, tasks.name FROM tasks
-  // // JOIN tasktags ON tasks.id=tasktags.task_id
-  // // JOIN tags ON tasktags.tag_id=tags.id
-  // // WHERE tags.name IN (tags)
-  // // GROUP BY tasks.id
-  // // HAVING count(*) = `{tags.length}`;
-  // Task.addScope('tags', tags => ({
-  //   group: ['Task.id'],
-  //   having: sequelize.where(sequelize.fn('COUNT', sequelize.col('*')), { [sequelize.Op.gte]: tags.length }),
-  //   subQuery: false,
-  //   include: [
-  //     { model: sequelize.models.Tag, where: { name: { [sequelize.Op.or]: tags } } },
-  //   ],
-  // }));
-
   return Task;
 };

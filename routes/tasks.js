@@ -1,7 +1,7 @@
 import buildFormObj from '../lib/formObjectBuilder';
 import buildFilter from '../lib/filterBuilder';
 import userAuth from '../lib/middlewares';
-import { getFilteredTasks, findOrCreateTags, sanitizeQuery } from '../lib/util';
+import { findAndCountAllTasks, findOrCreateTags, sanitizeQuery } from '../lib/util';
 import getPaginationObject from '../lib/pagination';
 import {
   User, Task, TaskStatus, Tag,
@@ -11,38 +11,23 @@ export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
       const { query } = ctx.request;
-      console.log('query', query);
       const { userId: currentUser } = ctx.session;
       const sanitizedQuery = sanitizeQuery(query);
-      console.log('sanitized', sanitizedQuery);
       const filter = buildFilter(sanitizedQuery);
-      console.log('filter', filter);
-      try {
-        const { tasks, count } = await getFilteredTasks(filter);
-        await getPaginationObject(query, count);
-      } catch (err) {
-        console.error(err);
-      }
-      const { tasks, count } = await getFilteredTasks(filter);
-      console.log('count', count);
+      const { tasks, count } = await findAndCountAllTasks(filter);
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
       const tags = await Tag.findAll();
       const paginationObject = await getPaginationObject(sanitizedQuery, count);
-      console.log('pagination', paginationObject);
-      try {
-        ctx.render('tasks', {
-          tasks,
-          users: [{ id: 'any', fullName: 'any' }, ...users],
-          statuses: [{ id: 'any', name: 'any' }, ...statuses],
-          currentUser,
-          tags,
-          searchForm: sanitizedQuery,
-          paginationObject,
-        });
-      } catch (err) {
-        console.error(err);
-      }
+      ctx.render('tasks', {
+        tasks,
+        users: [{ id: 'any', fullName: 'any' }, ...users],
+        statuses: [{ id: 'any', name: 'any' }, ...statuses],
+        currentUser,
+        tags,
+        searchForm: sanitizedQuery,
+        paginationObject,
+      });
     })
     .get('newTask', '/tasks/new', userAuth, async (ctx) => {
       const users = await User.findAll();
@@ -61,9 +46,7 @@ export default (router, { logger }) => {
       const task = await Task.scope({ method: ['findByPk', id] }).findOne();
       const users = await User.findAll();
       const statuses = await TaskStatus.findAll();
-      console.log(task);
       const tags = task.Tags.map(tag => tag.name).join(' ');
-      console.log(await task.getTags());
       ctx.render('tasks/edit', { f: buildFormObj(task), users, statuses, tags }); // eslint-disable-line
     })
     .post('createTask', '/tasks', userAuth, async (ctx) => {
@@ -90,8 +73,6 @@ export default (router, { logger }) => {
       const { form: updatedTask } = ctx.request.body;
       const task = await Task.findByPk(id);
       const tags = await findOrCreateTags(updatedTask.tagsQuery);
-      console.log(updatedTask.tagsQuery);
-      console.log(tags);
       try {
         await task.update(updatedTask);
         await task.setTags(tags);
