@@ -27,7 +27,7 @@ describe('task pagination', () => {
   pagesArr.map(({ number, firstButton, lastButton }) => it(`check page ${number}`, async () => {
     const limit = 10;
     const query = { offset: ((number - 1) * limit) };
-    const { chunk } = await getPaginationObject(query);
+    const { chunk } = await getPaginationObject(query, 200);
     const [firstEl] = chunk;
     const [lastEl] = chunk.slice(-1);
 
