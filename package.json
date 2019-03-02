@@ -1,6 +1,6 @@
 {
   "name": "brasid-task-manager",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "student's redis-like task manager web-app",
   "engines": {
     "node": "11.9",
