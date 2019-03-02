@@ -16,6 +16,12 @@ compose-setup: prepare compose-build compose-install compose-db-setup
 compose-db-setup:
 	docker-compose run web npx sequelize db:migrate
 
+compose-db-seed:
+	docker-compose run web npx sequelize db:seed:all
+
+compose-db-unseed:
+	docker-compose run web npx sequelize db:seed:undo:all
+
 compose-kill:
 	docker-compose kill
 
