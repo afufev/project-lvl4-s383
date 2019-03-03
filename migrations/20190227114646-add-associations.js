@@ -16,7 +16,7 @@ module.exports = {
       'Tasks',
       'creatorId',
       {
-        type: Sequelize.INTEGER,
+        type: Sequelize.Sequelize.DataTypes.UUID,
         references: {
           model: 'Users',
           key: 'id',
@@ -29,7 +29,7 @@ module.exports = {
       'Tasks',
       'assigneeId',
       {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DataTypes.UUID,
         references: {
           model: 'Users',
           key: 'id',
