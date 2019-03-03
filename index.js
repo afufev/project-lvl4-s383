@@ -13,7 +13,7 @@ import methodOverride from 'koa-methodoverride';
 import Rollbar from 'rollbar';
 import { format } from 'date-fns';
 
-import webpackConfig from '../webpack.config';
+import webpackConfig from './webpack.config';
 import addRoutes from './routes';
 import container from './container';
 
