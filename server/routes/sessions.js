@@ -15,6 +15,7 @@ export default (router) => {
           email,
         },
       });
+      console.log(user && user.passwordDigest === encrypt(password));
       if (user && user.passwordDigest === encrypt(password)) {
         ctx.session.userId = user.id;
         ctx.flash.set(`Welcome, ${user.fullName}`);
