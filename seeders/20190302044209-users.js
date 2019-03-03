@@ -1,7 +1,7 @@
 const faker = require('faker');
 
-const usersArr = new Array(20).fill(null).map((el, index) => ({
-  id: index + 1,
+const usersArr = new Array(20).fill(null).map(() => ({
+  id: faker.random.uuid,
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
   email: faker.internet.email(),
