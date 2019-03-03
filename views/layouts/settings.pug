@@ -1,17 +1,22 @@
 extends /layouts/application.pug
 
 block content
-  .container
-    - const isActive = (listUrl) => listUrl === currentUrl;
-    .container.my-5
-      .row
-        .col-12.col-lg-3.pr-4
-          .card.mb-5
-            .card-header.font-weigth-bold.x-font-all-small-caps.text-muted Personal settings
-            .list-group.list-group-flush.shadow-sm
-              a.nav-link.list-group-item.list-group-item-action(href= urlFor('userProfile') class={active: isActive(urlFor('userProfile')) } ) Profile
-              a.nav-link.list-group-item.list-group-item-action(href= urlFor('userSettings') class={active: isActive(urlFor('userSettings')) } ) Account
-              a.nav-link.list-group-item.list-group-item-action.disabled(href= "#") Email
-              a.nav-link.list-group-item.list-group-item-action.disabled(href="#") Tasks
-        .col-12.col-lg-9.mt-5.mt-lg-0
+  .container-fluid.bg-light.pt-4.pb-0
+    // - const isActive = (url) => url === path;
+    .row
+      .col-1.col-md-2
+      .col-11.col-md-8
+        ul.nav.nav-tabs
+          li.nav-item
+            a.nav-link(href= urlFor('userProfile') class={active: (urlFor('userProfile') === path) } ) Profile
+          li.nav-item
+            a.nav-link(href= urlFor('userSettings') class={active: (urlFor('userSettings') === path) } ) Account
+          li.nav-item
+            a.nav-link.disabled(href= '#') Email
+          li.nav-item
+            a.nav-link.disabled(href= '#') Tasks
+  .container-fluid
+    .row.my-5
+      .col-1.col-md-2
+      .col-10.col-md-5
           block settings-content
