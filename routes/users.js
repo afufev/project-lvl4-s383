@@ -21,10 +21,10 @@ export default (router) => {
     .get('userProfile', '/account/profile/edit', userAuth, async (ctx) => {
       const { userId: id } = ctx.session;
       const user = await User.findByPk(id);
-      ctx.render('users/profile', { f: buildFormObj(user), currentUrl: router.url('userProfile') });
+      ctx.render('users/profile', { f: buildFormObj(user) });
     })
     .get('userSettings', '/account/settings/edit', userAuth, (ctx) => {
-      ctx.render('users/account', { f: buildFormObj({}), currentUrl: router.url('userSettings') });
+      ctx.render('users/account', { f: buildFormObj({}) });
     })
     .get('showUser', '/users/:id', async (ctx) => {
       const { id } = ctx.params;
@@ -52,7 +52,7 @@ export default (router) => {
         ctx.flash.set('Your profile was updated');
         ctx.redirect(router.url('userProfile'));
       } catch (err) {
-        ctx.render('users/profile', { f: buildFormObj(user, err), currentUrl: router.url('userProfile') });
+        ctx.render('users/profile', { f: buildFormObj(user, err) });
       }
     })
     .patch('changePassword', '/account/settings/change_password', async (ctx) => {
@@ -80,7 +80,7 @@ export default (router) => {
         ctx.redirect(router.url('userProfile'));
         return;
       }
-      ctx.render('users/account', { f: buildFormObj({}, { errors }), currentUrl: router.url('userSettings') });
+      ctx.render('users/account', { f: buildFormObj({}, { errors }) });
     })
     .delete('deleteUser', '/account/settings/delete', async (ctx) => {
       const { userId: id } = ctx.session;

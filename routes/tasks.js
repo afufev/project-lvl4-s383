@@ -11,7 +11,6 @@ export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
       const { query } = ctx.request;
-      const { userId: currentUser } = ctx.session;
       const sanitizedQuery = sanitizeQuery(query);
       const filter = buildFilter(sanitizedQuery);
       const { tasks, count } = await findAndCountAllTasks(filter);
@@ -23,7 +22,6 @@ export default (router, { logger }) => {
         tasks,
         users: [{ id: 'any', fullName: 'any' }, ...users],
         statuses: [{ id: 'any', name: 'any' }, ...statuses],
-        currentUser,
         tags,
         searchForm: sanitizedQuery,
         paginationObject,
