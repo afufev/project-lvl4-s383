@@ -1,5 +1,6 @@
 export default (router) => {
   router.get('root', '/', (ctx) => {
-    ctx.render('welcome/index');
+    ctx.redirect(router.url('tasks'));
+    // ctx.render('welcome/index');
   });
 };
