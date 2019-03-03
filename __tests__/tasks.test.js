@@ -1,8 +1,8 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
 
-import { Task, sequelize } from '../server/models';
-import app from '../server';
+import { Task, sequelize } from '../models';
+import app from '..';
 // import buildFilter from '../lib/filterBuilder';
 // import { getFilteredTasks, findOrCreateTags } from '../lib/util';
 

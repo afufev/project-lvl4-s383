@@ -16,7 +16,7 @@ module.exports = {
     },
   },
   entry: {
-    main: ['./client/index.js'],
+    main: ['./src/index.js'],
   },
   output: {
     path: path.join(__dirname, 'public', 'assets'),

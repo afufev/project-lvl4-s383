@@ -1,5 +1,5 @@
-import { sequelize } from '../server/models';
-import getPaginationObject from '../server/lib/pagination';
+import { sequelize } from '../models';
+import getPaginationObject from '../lib/pagination';
 
 import { seedUsers, seedStatuses, preparePaginationTasks } from './helpers';
 
