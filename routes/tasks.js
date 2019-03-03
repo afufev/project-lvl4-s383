@@ -3,29 +3,29 @@ import buildFilter from '../lib/filterBuilder';
 import userAuth from '../lib/middlewares';
 import { findAndCountAllTasks, findOrCreateTags, sanitizeQuery } from '../lib/util';
 import getPaginationObject from '../lib/pagination';
-import {
-  User, Task, TaskStatus, Tag,
-} from '../models';
+import { User, Task, TaskStatus } from '../models';
 
 export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
-      const { query } = ctx.request;
-      const sanitizedQuery = sanitizeQuery(query);
-      const filter = buildFilter(sanitizedQuery);
-      const { tasks, count } = await findAndCountAllTasks(filter);
-      const users = await User.findAll();
-      const statuses = await TaskStatus.findAll();
-      const tags = await Tag.findAll();
-      const paginationObject = await getPaginationObject(sanitizedQuery, count);
-      ctx.render('tasks', {
-        tasks,
-        users: [{ id: 'any', fullName: 'any' }, ...users],
-        statuses: [{ id: 'any', name: 'any' }, ...statuses],
-        tags,
-        searchForm: sanitizedQuery,
-        paginationObject,
-      });
+      try {
+        const { query } = ctx.request;
+        const sanitizedQuery = sanitizeQuery(query);
+        const filter = buildFilter(sanitizedQuery);
+        const { tasks, count } = await findAndCountAllTasks(filter);
+        const users = await User.findAll();
+        const statuses = await TaskStatus.findAll();
+        const paginationObject = await getPaginationObject(sanitizedQuery, count);
+        ctx.render('tasks', {
+          tasks,
+          users: [{ id: 'any', fullName: 'any' }, ...users],
+          statuses: [{ id: 'any', name: 'any' }, ...statuses],
+          searchForm: sanitizedQuery,
+          paginationObject,
+        });
+      } catch (err) {
+        console.error(err);
+      }
     })
     .get('newTask', '/tasks/new', userAuth, async (ctx) => {
       const users = await User.findAll();
