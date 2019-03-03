@@ -8,24 +8,20 @@ import { User, Task, TaskStatus } from '../models';
 export default (router, { logger }) => {
   router
     .get('tasks', '/tasks', async (ctx) => {
-      try {
-        const { query } = ctx.request;
-        const sanitizedQuery = sanitizeQuery(query);
-        const filter = buildFilter(sanitizedQuery);
-        const { tasks, count } = await findAndCountAllTasks(filter);
-        const users = await User.findAll();
-        const statuses = await TaskStatus.findAll();
-        const paginationObject = await getPaginationObject(sanitizedQuery, count);
-        ctx.render('tasks', {
-          tasks,
-          users: [{ id: 'any', fullName: 'any' }, ...users],
-          statuses: [{ id: 'any', name: 'any' }, ...statuses],
-          searchForm: sanitizedQuery,
-          paginationObject,
-        });
-      } catch (err) {
-        console.error(err);
-      }
+      const { query } = ctx.request;
+      const sanitizedQuery = sanitizeQuery(query);
+      const filter = buildFilter(sanitizedQuery);
+      const { tasks, count } = await findAndCountAllTasks(filter);
+      const users = await User.findAll();
+      const statuses = await TaskStatus.findAll();
+      const paginationObject = await getPaginationObject(sanitizedQuery, count);
+      ctx.render('tasks', {
+        tasks,
+        users: [{ id: 'any', fullName: 'any' }, ...users],
+        statuses: [{ id: 'any', name: 'any' }, ...statuses],
+        searchForm: sanitizedQuery,
+        paginationObject,
+      });
     })
     .get('newTask', '/tasks/new', userAuth, async (ctx) => {
       const users = await User.findAll();
