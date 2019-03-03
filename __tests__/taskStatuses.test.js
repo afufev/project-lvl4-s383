@@ -1,8 +1,8 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
 
-import { TaskStatus, sequelize } from '../models';
-import app from '..';
+import { TaskStatus, sequelize } from '../server/models';
+import app from '../server';
 
 import { seedUsers, getTaskCookie } from './helpers';
 import { status, updatedStatus } from './__fixtures__/tasktatuses';

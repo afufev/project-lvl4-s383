@@ -1,7 +1,7 @@
 import request from 'supertest';
 import {
   User, Task, TaskStatus, Tag,
-} from '../../models';
+} from '../../server/models';
 import { user, usersArr } from '../__fixtures__/users';
 import { statusArr } from '../__fixtures__/tasktatuses';
 import { taskArr, bigTaskArr } from '../__fixtures__/tasks';

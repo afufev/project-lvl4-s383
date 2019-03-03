@@ -1,8 +1,8 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
 
-import { User, sequelize } from '../models';
-import app from '..';
+import { User, sequelize } from '../server/models';
+import app from '../server';
 
 import {
   user, unknownUser, updatedUser, updatedPassword,

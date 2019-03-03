@@ -1,8 +1,8 @@
 import gulp from 'gulp';
 // import gulpif from 'gulp-if';
 import repl from 'repl';
-import container from './container';
-import getServer from '.';
+import container from './server/container';
+import getServer from './server';
 // import getDevServer from 'src/server';
 // import getServer from '/dist/server';
 

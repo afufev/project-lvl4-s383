@@ -1,8 +1,8 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
 
-import { sequelize } from '../models';
-import app from '..';
+import { sequelize } from '../server/models';
+import app from '../server';
 
 beforeAll(() => {
   expect.extend(matchers);
