@@ -14,7 +14,7 @@ const getTasksArr = users => new Array(207).fill(null).map((el, index) => ({
 
 module.exports = {
   up: queryInterface => queryInterface.sequelize.query(
-    'select id from "Users"', { type: queryInterface.sequelize.QueryTypes.SELECT },
+    'select * from "Users"', { type: queryInterface.sequelize.QueryTypes.SELECT },
   ).then(users => queryInterface.bulkInsert('Tasks', getTasksArr(users), {})),
 
   down: queryInterface => queryInterface.bulkDelete('Tasks', null, {}),
