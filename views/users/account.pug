@@ -1,17 +1,22 @@
 extends /layouts/settings.pug
 
 block settings-content
-  h3 Account
   +formFor(f, { url: urlFor('changePassword'), method: 'patch' })
     .row
       .col-12.col-xl-6
         block form-content
-          .form-group
-            +input(f, 'currentPassword', { as: 'password' })
-          .form-group
-            +input(f, 'newPassword', { as: 'password' })
-          .form-group
-            +input(f, 'confirmPassword', { as: 'password' })
+          .form-group.row
+            label.col-12.col-md-3 Old password
+            .col-12.col-md-9
+              +input(f, 'currentPassword', { as: 'password' })
+          .form-group.row
+            label.col-12.col-md-3 New password
+            .col-12.col-md-9
+              +input(f, 'newPassword', { as: 'password' })
+          .form-group.row
+            label.col-12.col-md-3 Confirm password
+            .col-12.col-md-9
+              +input(f, 'confirmPassword', { as: 'password' })
           +button(f)
           hr
           - const target = `user${f.object.id}`;
