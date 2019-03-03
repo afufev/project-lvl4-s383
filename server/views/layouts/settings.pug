@@ -1,0 +1,22 @@
+extends /layouts/application.pug
+
+block content
+  .container-fluid.bg-light.pt-4.pb-0
+    // - const isActive = (url) => url === path;
+    .row
+      .col-1.col-md-2
+      .col-11.col-md-8
+        ul.nav.nav-tabs
+          li.nav-item
+            a.nav-link(href= urlFor('userProfile') class={active: (urlFor('userProfile') === path) } ) Profile
+          li.nav-item
+            a.nav-link(href= urlFor('userSettings') class={active: (urlFor('userSettings') === path) } ) Account
+          li.nav-item
+            a.nav-link.disabled(href= '#') Email
+          li.nav-item
+            a.nav-link.disabled(href= '#') Tasks
+  .container-fluid
+    .row.my-5
+      .col-1.col-md-2
+      .col-10.col-md-5
+          block settings-content

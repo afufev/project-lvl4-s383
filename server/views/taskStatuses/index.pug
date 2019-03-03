@@ -1,0 +1,17 @@
+extends /layouts/tables.pug
+
+block table-content
+  .card.mt-3
+    .card-header Task statuses
+    .list-group.list-group-flush
+      each status in taskStatuses
+        .row.p-2.justify-content-between
+          .col-md-auto
+            a.list-group-item.list-group-item-action(href= urlFor('tasks', { query: { statusId: status.id } }))= status.name
+          if isSignedIn()
+            - const target = `status${status.id}`
+            .col-md-auto.pr-3
+              .btn-group(role='group')
+                a.btn.btn-sm.btn-secondary(href= urlFor('statusEdit', { id: status.id  }) method='get' rel='nofollow') Edit
+                button.btn.btn-sm.btn-secondary(type='button' data-toggle='modal' data-target= `#${target}`) Delete
+                +modal({ target, name: 'status', url: urlFor('deleteStatus', { id: status.id  }) })

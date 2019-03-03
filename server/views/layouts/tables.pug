@@ -1,0 +1,20 @@
+extends /layouts/application.pug
+
+block content
+  .container-fluid.bg-light.pt-4.pb-0
+    - const isActive = (url) => url === path;
+    .row
+      .col-1.col-md-2
+      .col-11.col-md-8
+        ul.nav.nav-tabs
+          li.nav-item
+            a.nav-link(href=urlFor('users') class={ 'active': isActive(urlFor('users')) }) Users
+          li.nav-item
+            a.nav-link(href= urlFor('tasks') class={ 'active': isActive(urlFor('tasks')) }) Tasks
+          li.nav-item
+            a.nav-link(href= urlFor('taskStatuses') class={ 'active': isActive(urlFor('taskStatuses')) }) Task statuses
+  .container-fluid
+    .row
+      .col-1.col-md-2
+      .col-10.col-md-8
+        block table-content

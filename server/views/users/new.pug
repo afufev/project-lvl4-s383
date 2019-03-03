@@ -1,0 +1,15 @@
+extends /layouts/sign-form.pug
+
+block signForm-content
+  h1.h3.mb-4.mt-3= 'Join Task Manager!'
+  +formFor(f, { url: urlFor('users'), method: 'post' })
+    block form-content
+      .form-group
+        +input(f, 'email', { as: 'email'})
+      .form-group
+        +input(f, 'firstName')
+      .form-group
+        +input(f, 'lastName')
+      .form-group
+        +input(f, 'password', { as: 'password' })
+      +button(f)

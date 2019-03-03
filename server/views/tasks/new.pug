@@ -1,0 +1,34 @@
+extends /layouts/application.pug
+
+block content
+  .row.bg-light.pt-2.px-5
+    .col-0.col-md-2
+    .col-12.col-md-5
+      nav
+        ol.breadcrumb.bg-light
+          li.breadcrumb-item.disabled "project name"
+          li.breadcrumb-item new task
+  .row.pb-5.mx-5.my-5
+    .col-0.col-md-2
+    .col-12.col-md-7.p-4.rounded.shadow.border
+      +formFor(f, { url: urlFor('createTask'), method: 'post' })
+        block form-content
+          .form-group.row
+            label.col-sm-2.col-form-label Name
+            .col-sm-10
+              +input(f, 'name', { title: 'Name', as: 'text' })
+          +textarea(f, 'description', { title: 'Description', as: 'text' })
+          .form-group.row
+            label.col-sm-2.col-form-label Tags
+            .col-sm-10
+              +input(f, 'tagsQuery', { title: 'Tags', as: 'text' })
+          .form-group.row
+            label.col-sm-2.col-form-label Assign to
+            .col-sm-3
+              +select('Assign to', { name: 'form[assigneeId]', choices: users, title: 'fullName' })
+          .form-group.row
+            label.col-sm-2.col-form-label Status
+            .col-sm-3
+              +select('Status', { name: 'form[statusId]', choices: statuses, title: 'name' })
+          .col-md-2.ml-n3
+            +button(f)

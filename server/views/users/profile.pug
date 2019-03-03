@@ -1,0 +1,20 @@
+extends /layouts/settings.pug
+
+block settings-content
+  +formFor(f, { url: urlFor('updateUserProfile'), method: 'patch' })
+    .row
+      .col-12.col-xl-6
+        block form-content
+          .form-group.row
+            label.col-12.col-md-3 Email
+            .col-12.col-md-9
+              +input(f, 'email', { as: 'email'})
+          .form-group.row
+            label.col-12.col-md-3 First name
+            .col-12.col-md-9
+              +input(f, 'firstName')
+          .form-group.row
+            label.col-12.col-md-3 Last name
+            .col-12.col-md-9
+              +input(f, 'lastName')
+          +button(f)
