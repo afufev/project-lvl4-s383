@@ -19,7 +19,7 @@ describe('basic routes', () => {
   it('GET /', async () => {
     const res = await request.agent(server)
       .get('/');
-    expect(res).toHaveHTTPStatus(200);
+    expect(res).toHaveHTTPStatus(302);
   });
   it('GET /users', async () => {
     const res = await request.agent(server)
