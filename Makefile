@@ -11,7 +11,6 @@ compose-install:
 	docker-compose run web npm install
 
 compose-setup: prepare compose-build compose-install compose-db-setup
-	npx flow-typed install
 
 compose-db-setup:
 	docker-compose run web npx sequelize db:migrate

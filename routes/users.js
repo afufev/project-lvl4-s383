@@ -38,10 +38,8 @@ export default (router) => {
         await user.save();
         ctx.flash.set('User has been created');
         ctx.session.userId = user.id;
-        console.log(user);
         ctx.redirect(router.url('root'));
       } catch (err) {
-        console.log(err);
         ctx.render('users/new', { f: buildFormObj(user, err) });
       }
     })
