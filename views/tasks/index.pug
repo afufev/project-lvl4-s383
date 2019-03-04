@@ -61,6 +61,7 @@ block table-content
               tbody
                 each task in tasks
                   - const id = task.id ? task.id : task.dataValues.id
+                  - const createdAt = task.createdAt ? task.createdAt : task.dataValues.createdAt
                   - const name = task.name ? task.name : task.dataValues.name
                   - const status =  task.status ?  task.status.name : ''
                   tr
@@ -70,7 +71,7 @@ block table-content
                         a.h6.font-weight-bold(href= urlFor('showTask', { id }))= name
                         each tag in task.Tags
                           a.badge.badge-info.mt-1.mb-2.ml-1(href= urlFor('tasks', { query: { tagsQuery: tag.name } }))= `#${tag.name}`
-                      .row.pl-4(style={'font-size': '.8rem'})= `#${task.id} created on ${formatDate(task.createdAt)} by`
+                      .row.pl-4(style={'font-size': '.8rem'})= `#${id} created on ${formatDate(createdAt)} by`
                         a.pl-1(href= urlFor('showUser', { id: task.creator.id }))= task.creator.fullName
                     td
                       if task.assignee.fullName
