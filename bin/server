@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+require('@babel/register')({
+  retainLines: true,
+});
+const program = require('commander');
+const repl = require('repl');
+const container = require('../container');
+const getServer = require('../index.js').default;
+
+program
+  .command('console')
+  .action(() => {
+    const replServer = repl.start({
+      prompt: 'Application console > ',
+    });
+    Object.keys(container).forEach((key) => {
+      replServer.context[key] = container[key];
+    });
+  });
+program.command('server')
+  .action((cb) => {
+    console.log(getServer);
+    getServer().listen(process.env.PORT || 4000, cb);
+  });
+
+program.parse(process.argv);
